@@ -1,0 +1,129 @@
+O programie:
+
+Karaoke z Eris Kallisti Dyskordia
+
+
+MIT License
+
+Copyright (c) 2017 Jacek Mulawka
+
+j.mulawka@interia.pl
+
+https://github.com/jacek-mulawka
+
+
+Program jest darmowy, udostêpniony w postaci takiej jakiej jest wraz ze wszystkimi b³êdami. U¿ytkownik zyskuje dostêp do programu, u¿ywa programu na w³asne ryzyko i ponosi wy³¹czn¹ odpowiedzialnoœæ za wszelkie szkody (w³asne i niew³asne) materialne i niematerialne oraz utratê danych w zwi¹zku z u¿ywaniem programu.
+
+Program zosta³ stworzony z u¿yciem komponentów projektu VideoLAN (http://www.videolan.org).
+Aby program móg³ dzia³aæ nale¿y zainstalowaæ 'VLC media player' dostêpny na stronie: http://www.videolan.org/
+
+
+
+
+Pomoc:
+
+
+Skróty klawiszowe:
+
+G³oœnoœæ
+  G³oœniej [kursor góra, + (klawiatura numeryczna)].
+  Ciszej [kursor dó³, - (klawiatura numeryczna)].
+  Wycisz [W].
+
+Odtwarzanie:
+  Otwórz plik, play [P].
+  Wznów / Pauza [Spacja].
+  Stop [S].
+  Wczytaj napisy [N].
+
+  Skocz do ty³u [kursor lewo, 10x : Ctrl + kursor lewo, 0.1x : Shift + kursor lewo]
+  Skocz do przodu [kursor prawo, 10x : Ctrl + kursor prawo, 0.1x : Shift + kursor prawo].
+  Skocz 1 klatkê do przodu [>].
+
+Pliki:
+  Plik multimediów (wska¿ plik) [Ctrl + O].
+  Plik napisów (wska¿ plik) [Ctrl + N].
+  Wyczyœæ napisy [X].
+
+Widocznoœæ:
+  Ukryj panel przycisków [U].
+  Opcje [O].
+  Pe³ny ekran [Enter, Ctrl + U].
+  Normalny ekran [Esc, Ctrl + U].
+  Pe³ny ekran (tryb niestabilny) [Ctrl + Enter].
+  Normalny ekran (tryb niestabilny) [Shift + Enter, Ctrl + Enter].
+  Minimalizuj okno [, (numeryczna)].
+  Odstêp linii œpiewu [7 (numeryczna) - zmniejsz, 1 (numeryczna) - zwiêksz].
+  Widocznoœæ linii œpiewu [L].
+  Widocznoœæ linii œpiewu górnej [1].
+  Widocznoœæ linii œpiewu œrodkowej [2].
+  Widocznoœæ linii œpiewu dolnej [3].
+  Odœwie¿ widok [R].
+
+Napisy:
+  Pozycja obszaru œpiewu [Page Up - podwy¿sz, Page Down - obni¿].
+  Wielkoœæ linii œpiewu [8 (numeryczna) - zwiêksz, 2 (numeryczna) - zmniejsz].
+  Rozmiar czcionki napisów [Home - zwiêksz rozmiar, End - zmniejsz rozmiar].
+  Czêstotliwoœæ zegara [Ctrl + + - zwiêksz, Ctrl + - - zmniejsz, Ctrl + Backspace - domyœlna].
+  Przesuniêcie napisów [100 ms : [ - opóŸnij, ] - przyœpiesz, 500 ms : Ctrl + [ - opóŸnij, Ctrl + ] - przyœpiesz, ' - wyzeruj].
+  Skok o iloœæ sekund [9 (numeryczna) - zwiêksz, 3 (numeryczna) - zmniejsz].
+  Test - informacja o parametrach napisu [T].
+
+
+
+
+O napisach:
+
+Domyœlnie akceptowane rozszerzenia plików (tekstowych) z napisami: esama_karaoke, srt, txt.
+
+Parametry napisów nale¿y zdefiniowaæ w 4 pierwszych linijkach pliku (bez pierwszych pustych linii).
+  - Przesuniêcie napisów nale¿y zdefiniowaæ w 3 linijce pliku, wartoœæ jest w milisekundach; mog¹ byæ te¿ wartoœci ujemne (przesuniêcie napisów=300|-1000).
+  - Rodzaj ukrywania napisów napisów nale¿y zdefiniowaæ w 4 linijce pliku (ukrywanie napisów=dó³|góra|brak).
+    Je¿eli nie zdefiniowano, domyœlnie ustawi na ukrywanie górne.
+    Wartoœæ 'brak' nie zmieni ustawienie (pozostawi wczeœniejsze ustawienie).
+
+Je¿eli nie zdefiniowano parametrów napisów zaleca siê zostawiæ pierwsz¹ linijkê pust¹ (dla niektórych kodowañ, np. UTF-8, b³êdnie dekoduje pierwsz¹ linijkê).
+
+Parametrów napisów nie wyœwietla w zak³adce test (je¿eli wyœwietla to znaczy, ¿e nie zinterpretowa³ parametrów prawid³owo i s¹ traktowane jako tekst piosenki).
+
+Przyk³adowa struktura plików z napisami:
+I:
+
+0
+00:00:02,000 --> 00:00:12,000
+Tekst piosenki 1
+
+0
+00:00:15,500 --> 00:00:27,000
+Tekst piosenki 2
+Tekst piosenki 3
+
+0
+00:00:30,200 --> 00:00:42,123
+Tekst piosenki 4
+
+Tekst piosenki 5
+II (z zadanym przesuniêciem wszystkich napisów i wskazanym rodzajem ukrywania napisów):
+0
+00:00:00,001 --> 00:00:00,002
+przesuniêcie napisów=300
+ukrywanie napisów=góra
+
+0
+00:00:02,000 --> 00:00:12,000
+Tekst piosenki 1
+
+0
+00:00:15,500 --> 00:00:27,000
+Tekst piosenki 2
+Tekst piosenki 3
+
+0
+00:00:30,200 --> 00:00:42,123
+Tekst piosenki 4
+
+Tekst piosenki 5
+
+
+Uwagi:
+Dla plików mp3 o próbkowaniu powy¿ej 128 kb/s po skoku czasowym mo¿e pokazywaæ nieprawid³owy bie¿¹cy czas utworu i tym samym straciæ synchronizacjê napisów.

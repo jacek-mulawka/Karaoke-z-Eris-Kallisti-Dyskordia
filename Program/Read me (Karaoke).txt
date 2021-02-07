@@ -1,0 +1,42 @@
+Karaoke z Eris Kallisti Dyskordia
+wersja 2021.02.07.
+
+MIT License
+
+Copyright (c) 2017 Jacek Mulawka
+
+j.mulawka@interia.pl
+
+
+
+Program zosta³ stworzony z u¿yciem komponentów projektu VideoLAN (http://www.videolan.org).
+Aby program móg³ dzia³aæ nale¿y zainstalowaæ 'VLC media player' dostêpny na stronie: http://www.videolan.org/
+
+
+Przyk³ad nazewnictwa plików obs³ugiwanego przez program:
+
+<nazwa pliku>.esama_karaoke
+<nazwa pliku>.mp3
+
+Piosenka 1.esama_karaoke
+Piosenka 1.mp3
+
+Teledysk 2.esama_karaoke
+Teledysk 2.mp4
+
+
+
+The program uses VideoLAN (http://www.videolan.org).
+To run the program you need to install 'VLC media player' http://www.videolan.org/
+
+
+Example of file naming supported by the program:
+
+<file name>.esama_karaoke
+<file name>.mp3
+
+Song 1.esama_karaoke
+Song 1.mp3
+
+Video 2.esama_karaoke
+Video 2.mp4
