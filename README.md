@@ -7,8 +7,12 @@ Aby program mógł działać należy zainstalować 'VLC media player' dostępny 
 
 
 
-
 A media player created in Lazarus that displays karaoke subtitles in the form of moving text. 
 
 The program uses VideoLAN (http://www.videolan.org).
 To run the program you need to install 'VLC media player' http://www.videolan.org/
+
+
+
+Powered by
+VideoLAN (http://www.videolan.org), Lazarus (https://www.lazarus-ide.org).
