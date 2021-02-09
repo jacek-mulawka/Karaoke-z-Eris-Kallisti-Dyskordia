@@ -15,4 +15,7 @@ To run the program you need to install 'VLC media player' http://www.videolan.or
 
 
 Powered by
-VideoLAN (http://www.videolan.org), Lazarus (https://www.lazarus-ide.org).
+
+VideoLAN (http://www.videolan.org), 
+
+Lazarus (https://www.lazarus-ide.org).
