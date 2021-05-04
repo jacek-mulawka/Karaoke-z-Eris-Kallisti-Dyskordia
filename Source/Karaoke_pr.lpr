@@ -13,9 +13,12 @@ uses
 {$R *.res}
 
 begin
+
   RequireDerivedFormResource := True;
-  Application.Initialize;
-  Application.CreateForm(TKaraoke_Form, Karaoke_Form);
-  Application.Run;
+  Application.Title := 'Karaoke z Eris Kallisti Dyskordia';
+  Application.Initialize();
+  Application.CreateForm( TKaraoke_Form, Karaoke_Form );
+  Application.Run();
+
 end.
 

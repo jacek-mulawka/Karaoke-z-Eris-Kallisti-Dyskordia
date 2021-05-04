@@ -43,7 +43,6 @@ type
   end;
 
   TKaraoke_Form = class( TForm )
-    Logo_Image: TImage;
     Nie_Odswiezaj_Widoku_CheckBox: TCheckBox;
     Korekta_Czasu_Narastajaco_Prog_Etykieta_Label: TLabel;
     Korekta_Czasu_Narastajaco_Prezentuj_Roznice_CheckBox: TCheckBox;
@@ -288,7 +287,7 @@ begin
 
           ztt := Now();
 
-          Sleep( Karaoke_Form.Zegar_Czestotliwosc_SpinEdit.Value ); // 1000 = 1 sekunda.
+          Sleep( Karaoke_Form.Zegar_Czestotliwosc_SpinEdit.Value ); //1000 = 1 sekunda.
           //Karaoke_Form.Memo1.Lines.Add( 'a' );
 
           Karaoke_Form.sekcja_krytyczna.Enter();
@@ -346,7 +345,7 @@ begin
     or (  Pos( '.esama_karaoke', zts ) > 0  ) then
     begin
 
-      if FindFirst(  ExtractFilePath( adres_pliku ) + '*.*', faAnyFile, search_rec  ) = 0 then // Application potrzebuje w uses Forms.
+      if FindFirst(  ExtractFilePath( adres_pliku ) + '*.*', faAnyFile, search_rec  ) = 0 then //Application potrzebuje w uses Forms.
         begin
 
           repeat
@@ -358,8 +357,7 @@ begin
               and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> '.srt'   )
               and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> '.txt'   )
               and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> '.esama_karaoke'   )
-              //and (    AnsiLowerCase(  ExtractFileNameOnly( search_rec.Name )  ) = AnsiLowerCase(   ExtractFileNameOnly( adres_pliku )   )    ) then
-              and (    AnsiLowerCase(   ExtractFileName(  FileUtil.ExtractFileNameWithoutExt( search_rec.Name )  )   ) = AnsiLowerCase(   ExtractFileName(  FileUtil.ExtractFileNameWithoutExt( adres_pliku )  )   )    ) then // Zmiana w lazarusie 2.0 z ExtractFileNameOnly().
+              and (    AnsiLowerCase(  ExtractFileNameOnly( search_rec.Name )  ) = AnsiLowerCase(   ExtractFileNameOnly( adres_pliku )   )    ) then
                 begin
 
                   Result := true;
@@ -374,12 +372,12 @@ begin
 
                 end;
 
-          until FindNext( search_rec ) <> 0 // Zwraca dane kolejnego pliku zgodnego z parametrami wcześniej wywołanej funkcji FindFirst. Jeżeli można przejść do następnego znalezionego pliku zwraca 0.
+          until FindNext( search_rec ) <> 0 //Zwraca dane kolejnego pliku zgodnego z parametrami wcześniej wywołanej funkcji FindFirst. Jeżeli można przejść do następnego znalezionego pliku zwraca 0.
 
         end;
       //---//if FindFirst(  ExtractFilePath( adres_pliku ), faAnyFile, search_rec  ) = 0 then
 
-      SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
+      FindCloseUTF8( search_rec );
 
     end;
   //---//if   (  Pos( '.srt', zts ) > 0  ) (...)
@@ -430,41 +428,41 @@ begin
   sciezka_do_pliku := ReverseString( sciezka_do_pliku );
 
 
-  if FindFirst( sciezka_do_pliku + '.esama_karaoke', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
+  if FindFirst( sciezka_do_pliku + '.esama_karaoke', faAnyFile, search_rec ) = 0 then //Sprawdza czy istnieje plik.
     begin
 
       // Istnieje.
 
-      SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
+      FindCloseUTF8( search_rec );
 
       Wczytaj_Napisy( sciezka_do_pliku + '.esama_karaoke' );
 
     end
-  else//if FindFirst( sciezka_do_pliku + '.esama_karaoke', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
-  if FindFirst( sciezka_do_pliku + '.srt', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
+  else//if FindFirst( sciezka_do_pliku + '.esama_karaoke', faAnyFile, search_rec ) = 0 then //Sprawdza czy istnieje plik.
+  if FindFirst( sciezka_do_pliku + '.srt', faAnyFile, search_rec ) = 0 then //Sprawdza czy istnieje plik.
     begin
 
       // Istnieje.
 
-      SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
+      FindCloseUTF8( search_rec );
 
       Wczytaj_Napisy( sciezka_do_pliku + '.srt' );
 
     end
-  else//if FindFirst( sciezka_do_pliku + '.srt', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
-  if FindFirst( sciezka_do_pliku + '.txt', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
+  else//if FindFirst( sciezka_do_pliku + '.srt', faAnyFile, search_rec ) = 0 then //Sprawdza czy istnieje plik.
+  if FindFirst( sciezka_do_pliku + '.txt', faAnyFile, search_rec ) = 0 then //Sprawdza czy istnieje plik.
     begin
 
       // Istnieje.
 
-      SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
+      FindCloseUTF8( search_rec );
 
       Wczytaj_Napisy( sciezka_do_pliku + '.txt' );
 
 
     end
-  else//if FindFirst( sciezka_do_pliku + '.txt', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
-    SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
+  else//if FindFirst( sciezka_do_pliku + '.txt', faAnyFile, search_rec ) = 0 then //Sprawdza czy istnieje plik.
+    FindCloseUTF8( search_rec );
 
   PasLibVlcPlayer1.SetVideoSubtitleById( -1 ); // Wyłączy standardowe wyświetlanie napisów w odtwarzaczu.
 
@@ -842,7 +840,7 @@ begin
 
   Screen.Cursor := crHourGlass;
 
-  for i := 0 to Length( napisy_t ) - 1 do // Gdy pusta = 0; z jednym elementem = 1.
+  for i := 0 to Length( napisy_t ) - 1 do //gdy pusta = 0; z jednym elementem = 1
     FreeAndNil( napisy_t[ i ] );
 
   SetLength( napisy_t, 0 );
@@ -1281,7 +1279,7 @@ begin
   while i <= 5 do
     begin
 
-      if FindFirst( zts, faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
+      if FindFirst( zts, faAnyFile, search_rec ) = 0 then //Sprawdza czy istnieje plik.
         begin
 
           // Istnieje.
@@ -1289,7 +1287,7 @@ begin
 
           inc( i );
 
-          SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
+          FindCloseUTF8( search_rec );
 
           if i >= 5 then
             Exit;
@@ -1297,7 +1295,7 @@ begin
           Sleep( 1000 );
 
         end
-      else//if FindFirst( zts + '.esama_karaoke', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
+      else//if FindFirst( zts + '.esama_karaoke', faAnyFile, search_rec ) = 0 then //Sprawdza czy istnieje plik.
         Break; // Nie istnieje.
 
     end;
@@ -1492,9 +1490,9 @@ begin
 
   Tryb_Testowy_Napisow_CheckBox.Checked := false;
 
-  PasLibVlcPlayer1.Pause(); // Zatrzymanie filmu blokuje odczyt wartości głośności.
+  PasLibVlcPlayer1.Pause(); // Zatrzymanie filmu blokuje odczyt wartości głośności..
 
-  Zapisz_Ustawienia_ButtonClick( Sender ); // Zatrzymanie filmu blokuje odczyt wartości głośności.
+  Zapisz_Ustawienia_ButtonClick( Sender ); // Zatrzymanie filmu blokuje odczyt wartości głośności..
 
 
   if karaoke_handle <> 0 then
@@ -1586,7 +1584,7 @@ begin
       //  or (  Pos( '.esama_karaoke', zts ) > 0  ) then
       //  begin
       //
-      //    if FindFirst(  ExtractFilePath(  ParamStr( i )  ) + '*.*', faAnyFile, search_rec  ) = 0 then // Application potrzebuje w uses Forms.
+      //    if FindFirst(  ExtractFilePath(  ParamStr( i )  ) + '*.*', faAnyFile, search_rec  ) = 0 then //Application potrzebuje w uses Forms.
       //      begin
       //
       //        repeat
@@ -1620,7 +1618,7 @@ begin
       //      end;
       //    //---//if FindFirst(  ExtractFilePath(  ParamStr( i )  ), faAnyFile, search_rec  ) = 0 then
       //
-      //    SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
+      //    FindCloseUTF8( search_rec );
       //
       //    //Memo1.Lines.Add(  IntToStr( i )  );
       //
@@ -1724,11 +1722,6 @@ begin
     and (  SecondsBetween( Now(), zegar_systemowy_stop ) > 90 ) then
     Systemowy_Timer.Enabled := true; // Gdyby jakiś błąd spowodował nie włączenie zegara systemowego to spróbuje go włączyć tutaj.
 
-
-  if    ( PasLibVlcPlayer1.GetAudioVolume() > -1 )
-    and ( Glosnosc_ProgressBar.Position <> PasLibVlcPlayer1.GetAudioVolume() ) then
-    PasLibVlcPlayer1MediaPlayerAudioVolumeChanged( Sender, -99 ); // Odświeża wskaźnik głośności (czasami podczas włączania utworów wskaźnik głośności ustawia się na -1).
-
 end;//---//Timer1Timer().
 
 //Systemowy_TimerTimer().
@@ -1757,12 +1750,12 @@ begin
 
       zts := ExtractFilePath( Application.ExeName ) + 'Karaoke_plik';
 
-      if FindFirst( zts, faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
+      if FindFirst( zts, faAnyFile, search_rec ) = 0 then //Sprawdza czy istnieje plik.
         begin
 
           // Istnieje.
 
-          SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
+          FindCloseUTF8( search_rec );
 
 
           tekst_l := TStringList.Create();
@@ -1799,7 +1792,7 @@ begin
           Karaoke_Form.FormStyle := fsNormal;
 
         end;
-      //---//if FindFirst( sciezka_do_pliku, faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
+      //---//if FindFirst( sciezka_do_pliku, faAnyFile, search_rec ) = 0 then //Sprawdza czy istnieje plik.
 
     end;
   //---//if Jedno_Uruchomienie_Programu_CheckBox.Checked then
@@ -2355,7 +2348,7 @@ begin
 
       Wymiar_Label.Visible := true;
 
-      for i := 0 to Length( napisy_t ) - 1 do // Gdy pusta = 0; z jednym elementem = 1.
+      for i := 0 to Length( napisy_t ) - 1 do //gdy pusta = 0; z jednym elementem = 1
         if napisy_t[ i ] <> nil then
           //napisy_t[ i ].Ustaw_Czcionke_Napisu();
           Ustaw_Czcionke_Napisu( napisy_t[ i ] );
@@ -2384,7 +2377,7 @@ begin
 
       Wymiar_Label.Color := ColorDialog1.Color;
 
-      for i := 0 to Length( napisy_t ) - 1 do // Gdy pusta = 0; z jednym elementem = 1.
+      for i := 0 to Length( napisy_t ) - 1 do //gdy pusta = 0; z jednym elementem = 1
         if napisy_t[ i ] <> nil then
           napisy_t[ i ].Color := ColorDialog1.Color;
 
@@ -2400,7 +2393,7 @@ procedure TKaraoke_Form.Kolor_Linii_Spiewu_ButtonClick( Sender: TObject );
 begin
 
   if    ( Sender <> nil )
-    and ( TComponent(Sender).Name = Kolor_Linii_Spiewu_Gornej_Button.Name ) then
+    and ( TComponent(Sender).Name = 'Kolor_Linii_Spiewu_Gornej_Button' ) then
     begin
 
       ColorDialog1.Color := Linia_Spiewu_Gora_StaticText.Color;
@@ -2413,7 +2406,7 @@ begin
 
 
   if    ( Sender <> nil )
-    and ( TComponent(Sender).Name = Kolor_Linii_Spiewu_Srodkowej_Button.Name ) then
+    and ( TComponent(Sender).Name = 'Kolor_Linii_Spiewu_Srodkowej_Button' ) then
     begin
 
       ColorDialog1.Color := Linia_Spiewu_Srodek_StaticText.Color;
@@ -2426,7 +2419,7 @@ begin
 
 
   if    ( Sender <> nil )
-    and ( TComponent(Sender).Name = Kolor_Linii_Spiewu_Dolnej_Button.Name ) then
+    and ( TComponent(Sender).Name = 'Kolor_Linii_Spiewu_Dolnej_Button' ) then
     begin
 
       ColorDialog1.Color := Linia_Spiewu_Dol_StaticText.Color;
@@ -2748,7 +2741,7 @@ begin
   Pozycja_Obszaru_Spiewu_SpinEdit.Value := 5;
   Zegar_Czestotliwosc_SpinEdit.Value := 25;
 
-  Wyswietlaj_Napisy_Wedlug_RadioGroup.ItemIndex := 2; // czasu narastająco..
+  Wyswietlaj_Napisy_Wedlug_RadioGroup.ItemIndex := 2; // czasu narastająco.
   Skok_Sekundy_SpinEdit.Value := 3;
   Przesuniecie_Napisow_SpinEdit.Value := 3;
   Korekta_Czasu_Narastajaco_SpinEdit.Value := 1;
@@ -2756,7 +2749,7 @@ begin
   Korekta_Czasu_Narastajaco_Automatyczna_CheckBox.Checked := true;
   Korekta_Czasu_Narastajaco_Prog_SpinEdit.Value := 100;
 
-  Ukrywaj_Napisy_Wedlug_RadioGroup.ItemIndex := 0; // górnej krawędzi.
+  Ukrywaj_Napisy_Wedlug_RadioGroup.ItemIndex := 0; // górnek krawędzi
   Nie_Odswiezaj_Widoku_CheckBox.Checked := false;
   Wyswietlaj_Informacje_O_Zdarzeniu_CheckBox.Checked := true;
   Dolny_Pasek_Postepu_Wyswietlaj_CheckBox.Checked := true;
@@ -2769,7 +2762,7 @@ begin
   Wymiar_Label.Font.Name := 'Georgia';
   Wymiar_Label.Font.Style := [];
 
-  for i := 0 to Length( napisy_t ) - 1 do // Gdy pusta = 0; z jednym elementem = 1.
+  for i := 0 to Length( napisy_t ) - 1 do //gdy pusta = 0; z jednym elementem = 1
     if napisy_t[ i ] <> nil then
       begin
 
@@ -3076,7 +3069,7 @@ begin
 
       Wymiar_Label.Font.Size := Wymiar_Label.Font.Size + 1;
 
-      for i := 0 to Length( napisy_t ) - 1 do // Gdy pusta = 0; z jednym elementem = 1.
+      for i := 0 to Length( napisy_t ) - 1 do //gdy pusta = 0; z jednym elementem = 1
         if napisy_t[ i ] <> nil then
             Ustaw_Czcionke_Napisu( napisy_t[ i ] );
 
@@ -3101,7 +3094,7 @@ begin
 
       Wymiar_Label.Font.Size := Wymiar_Label.Font.Size - 1;
 
-      for i := 0 to Length( napisy_t ) - 1 do // Gdy pusta = 0; z jednym elementem = 1.
+      for i := 0 to Length( napisy_t ) - 1 do //gdy pusta = 0; z jednym elementem = 1
         if napisy_t[ i ] <> nil then
             Ustaw_Czcionke_Napisu( napisy_t[ i ] );
 
