@@ -6,6 +6,8 @@ Program został stworzony w Lazarus z użyciem komponentów projektu [VideoLAN](
 Aby program mógł działać należy zainstalować [VLC media player](http://www.videolan.org).
 
 
+## English
+
 A media player created in Lazarus that displays karaoke subtitles in the form of moving text. 
 
 The program uses [VideoLAN](http://www.videolan.org).
