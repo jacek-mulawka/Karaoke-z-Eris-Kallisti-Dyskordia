@@ -16,9 +16,11 @@ unit Karaoke;{05.03.2017}
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, ComCtrls, EditBtn, Spin, strutils, IniFiles,
-  Windows, PasLibVlcPlayerUnit, dateutils, SyncObjs;
+  SyncObjs,
+
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ExtCtrls, ComCtrls, EditBtn, Spin, Windows,
+  PasLibVlcPlayerUnit;
 
 type
 
@@ -30,10 +32,10 @@ type
     czas_od,
     czas_do
       : real;
-    procedure Ustaw_Czcionke_Napisu();
+    procedure Ustaw_Czcionke_Napisu_N();
   public
     { public declarations }
-    constructor Create( TheOwner: TComponent );
+    constructor Create( TheOwner : TComponent );
     destructor Destroy(); override;
   end;
 
@@ -43,6 +45,7 @@ type
   end;
 
   TKaraoke_Form = class( TForm )
+    Dolny_Pasek_Postepu__Ukrywaj_CheckBox: TCheckBox;
     Logo_Image: TImage;
     Nie_Odswiezaj_Widoku_CheckBox: TCheckBox;
     Korekta_Czasu_Narastajaco_Prog_Etykieta_Label: TLabel;
@@ -56,10 +59,17 @@ type
     Korekta_Czasu_Narastajaco_Prog_SpinEdit: TSpinEdit;
     Linie_Spiewu_Wielkosc_Etykieta_Label: TLabel;
     Linie_Spiewu_Wielkosc_SpinEdit: TSpinEdit;
-    Dolny_Pasek_Postepu_Wyswietlaj_CheckBox: TCheckBox;
+    Dolny_Pasek_Postepu__Wyswietlaj_CheckBox: TCheckBox;
+    O_Programie__3_Label: TLabel;
+    O_Programie__2_Label: TLabel;
+    O_Programie__E_Mail_Label: TLabel;
+    O_Programie__Www_Label: TLabel;
+    O_Programie__Www__VideoLAN_Label: TLabel;
+    O_Programie__Www__PasLibVlc_Label: TLabel;
+    O_Programie_ScrollBox: TScrollBox;
     Wyswietlaj_Informacje_O_Zdarzeniu_CheckBox: TCheckBox;
     Pomoc_Memo: TMemo;
-    O_Programie_Label: TLabel;
+    O_Programie__1_Label: TLabel;
     Linie_Spiewu_Odstep_SpinEdit: TSpinEdit;
     Linie_Spiewu_Odstep_Etykieta_Label: TLabel;
     Pomoc_TabSheet: TTabSheet;
@@ -176,62 +186,87 @@ type
     procedure Domyslne_Ustawienia_ButtonClick( Sender: TObject );
     procedure Karaoke_Click( Sender: TObject );
     procedure Test_Napisu_SpinEditKeyDown( Sender: TObject; var Key: Word; Shift: TShiftState );
+    procedure PasLibVlcPlayer1MouseDown( Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer );
+    procedure PasLibVlcPlayer1MouseUp( Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer );
     procedure Karaoke_MouseMove( Sender: TObject; Shift: TShiftState; X, Y: Integer );
     procedure Karaoke_MouseWheel( Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean );
     procedure Karaoke_KeyDown( Sender: TObject; var Key: Word; Shift: TShiftState );
+    procedure LinkLabelLinkClick( Sender: TObject );
   private
     { private declarations }
-    needStop, //???
-    zamykanie,
+    blokuj_form_show,
     linia_spiewu_gora_widoczna,
     linia_spiewu_srodek_widoczna,
     linia_spiewu_dol_widoczna,
-    blokuj_form_show
+    mysz__przycisk_nacisniety_g,
+    needStop, //???
+    zamykanie
       : boolean;
-    napisy_t : array of TNapis;
+
+    milisekundy_filmu,
+    mysz__przycisk_nacisniety__x__start_g,
+    mysz__przycisk_nacisniety__y__start_g,
+    okno_gora,
+    okno_lewo,
+    okno_szerokosc,
+    okno_wysokosc
+      : integer;
+
     czas_start,
     informacja_czas, // Do odliczania czasu do ukrycia etykiety z informacją o zdarzeniu.
     zegar_systemowy_stop
       : TTime;
-    kursor_ruch : TDateTime;
+
+    kursor_ruch_data_czas : TDateTime;
+
     karaoke_handle : THANDLE;
-    milisekundy_filmu,
-    okno_gora,
-    okno_lewo,
-    okno_wysokosc,
-    okno_szerokosc
-      : integer;
+
     watek : TWatek;
+
+    napisy_t : array of TNapis;
+
     sekcja_krytyczna : SyncObjs.TCriticalSection; // Potrzebuje w uses SyncObjs.
-    procedure FormParamStr();
-    function Otworz_Plik_Multimedialny_Pasujacy_Do_Napisow( const adres_pliku : string ) : boolean;
-    procedure Otworz_Plik( const adres_pliku : string );
-    procedure Wczytaj_Napisy( const adres_pliku : string );
-    procedure Zwolnij_Napisy();
-    procedure Ustaw_Czcionke_Napisu( var napis : TNapis );
-    procedure Przelicz_Napisy();
-    function Ustal_Pozycje( napis : TNapis; czas_filmu_aktualny_f : integer; const loguj : boolean = false ) : integer;
-    procedure Czas_Pasek_Click( pozycja : integer );
-    procedure Glosnosc_Pasek_Click( pozycja : integer );
-    function Pozycja_Obszaru_Spiewu_Okresl() : integer;
-    function Linie_Spiewu_Odstep_Okresl() : integer;
-    procedure Przerysuj_Zaslone( const wymus : boolean = false );
-    procedure Informacja_Tekst_Wyswietl( const napis : string; const liczba : variant );
+
+    procedure Czas_Pasek_Click( const pozycja_f : integer );
     procedure Dopisz_Plik_Do_Uruchomienia();
+    procedure FormParamStr();
+    procedure Glosnosc_Pasek_Click( const pozycja_f : integer );
+    procedure Informacja_Tekst_Wyswietl( const napis : string; const liczba : variant; const wyswietlaj_zawsze_f : boolean = false );
+    function Linie_Spiewu_Odstep_Okresl() : integer;
+    procedure Mysz__Przycisk_Nacisniety__Procent_Wylicz( const x_f, y_f : integer; const ustaw_f : boolean = false );
+    procedure Napisy__Przelicz();
+    procedure Napisy__Wczytaj( const adres_pliku : string );
+    procedure Napisy__Zwolnij();
+    procedure Otworz_Plik( const adres_pliku : string );
+    function Otworz_Plik_Multimedialny_Pasujacy_Do_Napisow( const adres_pliku : string ) : boolean;
+    function Pozycja_Obszaru_Spiewu_Okresl() : integer;
+    procedure Przerysuj_Zaslone( const wymus : boolean = false );
     procedure Synchronizuj_Milisekundy_Filmu();
+    function Ustal_Pozycje( napis : TNapis; czas_filmu_aktualny_f : integer; const loguj : boolean = false ) : integer;
+    procedure Ustaw_Czcionke_Napisu( var napis : TNapis );
   public
     { public declarations }
   end;
+
+const
+  glosnosc__poziom__minimalny_c : integer = 1;
+  glosnosc__poziom__maksymalny_c : integer = 200;
 
 var
   Karaoke_Form: TKaraoke_Form;
 
 implementation
 
+uses
+  DateUtils,
+  IniFiles,
+  LazFileUtils,
+  StrUtils;
+
 {$R *.lfm}
 
 //Konstruktor klasy TNapis.
-constructor TNapis.Create( TheOwner: TComponent );
+constructor TNapis.Create( TheOwner : TComponent );
 begin
 
   inherited;
@@ -251,8 +286,8 @@ begin
 
 end;//---//Destruktor klasy TNapis.
 
-//Funkcja Ustaw_Czcionke_Napisu().
-procedure TNapis.Ustaw_Czcionke_Napisu();
+//Funkcja Ustaw_Czcionke_Napisu_N().
+procedure TNapis.Ustaw_Czcionke_Napisu_N();
 begin
 
   Karaoke_Form.Wymiar_Label.Caption := Self.Caption;
@@ -262,7 +297,7 @@ begin
   Self.Width := Karaoke_Form.Wymiar_Label.Width;
   Self.Height := Karaoke_Form.Wymiar_Label.Height;
 
-end;//---//Funkcja Ustaw_Czcionke_Napisu().
+end;//---//Funkcja Ustaw_Czcionke_Napisu_N().
 
 //Watek.Execute().
 procedure TWatek.Execute();
@@ -291,15 +326,17 @@ begin
           Sleep( Karaoke_Form.Zegar_Czestotliwosc_SpinEdit.Value ); // 1000 = 1 sekunda.
           //Karaoke_Form.Memo1.Lines.Add( 'a' );
 
-          Karaoke_Form.sekcja_krytyczna.Enter();
+          if Karaoke_Form.sekcja_krytyczna <> nil then
+            Karaoke_Form.sekcja_krytyczna.Enter();
 
           if Karaoke_Form.PasLibVlcPlayer1.IsPlay() then
-            Karaoke_Form.milisekundy_filmu := Karaoke_Form.milisekundy_filmu + MilliSecondsBetween( Now(), ztt ) + Karaoke_Form.Korekta_Czasu_Narastajaco_SpinEdit.Value;
+            Karaoke_Form.milisekundy_filmu := Karaoke_Form.milisekundy_filmu + DateUtils.MilliSecondsBetween( Now(), ztt ) + Karaoke_Form.Korekta_Czasu_Narastajaco_SpinEdit.Value;
 
           //if Abs( Karaoke_Form.milisekundy_filmu - Karaoke_Form.PasLibVlcPlayer1.GetVideoPosInMs() ) > 350 then;
           //  Karaoke_Form.milisekundy_filmu := Karaoke_Form.PasLibVlcPlayer1.GetVideoPosInMs();
 
-          Karaoke_Form.sekcja_krytyczna.Leave();
+          if Karaoke_Form.sekcja_krytyczna <> nil then
+            Karaoke_Form.sekcja_krytyczna.Leave();
 
         end;
       //---//if Karaoke_Form.Wyswietlaj_Napisy_Wedlug_RadioGroup.ItemIndex = 2 then // czasu narastająco.
@@ -322,160 +359,559 @@ end;//---//Watek.Execute().
 
 //      ***      Funkcje      ***      //
 
-//Funkcja Otworz_Plik_Multimedialny_Pasujacy_Do_Napisow().
-function TKaraoke_Form.Otworz_Plik_Multimedialny_Pasujacy_Do_Napisow( const adres_pliku : string ) : boolean;
+//Funkcja Czas_Pasek_Click().
+procedure TKaraoke_Form.Czas_Pasek_Click( const pozycja_f : integer );
 var
-  search_rec : TSearchRec;
-  zts : string;
+  procent : real;
+  zti : integer;
 begin
 
-  //
-  // Funkcja znajdzie plik z rozszerzeniem nie exe i nie napisowym i wywoła funkcję otworzenia tego pliku.
-  //
+  //Memo1.Lines.Add(  FloatToStr( pozycja_f )  );
 
-  Result := false;
-
-  zts := AnsiLowerCase(  ExtractFileExt( adres_pliku )  );
-
-  if Pos( '.exe', zts ) > 0 then
-    Exit;
-
-  if   (  Pos( '.srt', zts ) > 0  )
-    or (  Pos( '.txt', zts ) > 0  )
-    //or (  Pos( '.exe', zts ) > 0  )
-    or (  Pos( '.esama_karaoke', zts ) > 0  ) then
+  if Czas_ProgressBar.Width = 0 then
     begin
 
-      if FindFirst(  ExtractFilePath( adres_pliku ) + '*.*', faAnyFile, search_rec  ) = 0 then // Application potrzebuje w uses Forms.
-        begin
-
-          repeat
-
-            if    ( search_rec.Attr <> faDirectory )
-              and ( search_rec.Name <> '.' )
-              and ( search_rec.Name <> '..' )
-              and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> zts   )
-              and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> '.srt'   )
-              and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> '.txt'   )
-              and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> '.esama_karaoke'   )
-              //and (    AnsiLowerCase(  ExtractFileNameOnly( search_rec.Name )  ) = AnsiLowerCase(   ExtractFileNameOnly( adres_pliku )   )    ) then
-              and (    AnsiLowerCase(   ExtractFileName(  FileUtil.ExtractFileNameWithoutExt( search_rec.Name )  )   ) = AnsiLowerCase(   ExtractFileName(  FileUtil.ExtractFileNameWithoutExt( adres_pliku )  )   )    ) then // Zmiana w lazarusie 2.0 z ExtractFileNameOnly().
-                begin
-
-                  Result := true;
-
-                  zts := ExtractFilePath( adres_pliku ) + search_rec.Name;
-                  Memo1.Lines.Add( zts );
-
-                  Muzyka_EditButton.Text := zts;
-                  Otworz_Plik( zts );
-
-                  Break;
-
-                end;
-
-          until FindNext( search_rec ) <> 0 // Zwraca dane kolejnego pliku zgodnego z parametrami wcześniej wywołanej funkcji FindFirst. Jeżeli można przejść do następnego znalezionego pliku zwraca 0.
-
-        end;
-      //---//if FindFirst(  ExtractFilePath( adres_pliku ), faAnyFile, search_rec  ) = 0 then
-
-      SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
+      PasLibVlcPlayer1.SetVideoPosInMs( 0 );
+      Exit;
 
     end;
-  //---//if   (  Pos( '.srt', zts ) > 0  ) (...)
-
-end;//---//Funkcja Otworz_Plik_Multimedialny_Pasujacy_Do_Napisow().
-
-//Funkcja Otworz_Plik().
-procedure TKaraoke_Form.Otworz_Plik( const adres_pliku : string );
-var
-  search_rec : TSearchRec;
-  sciezka_do_pliku,
-  zts
-    : string;
-begin
-
-  Screen.Cursor := crHourGlass;
-
-  PasLibVlcPlayer1.Play(  WideString( adres_pliku )  );
+  //---//if Czas_ProgressBar.Width = 0 then
 
 
-  if    ( Glosnosc_ProgressBar.Position >= 1 )
-    and ( Glosnosc_ProgressBar.Position <= 200 ) then
-    PasLibVlcPlayer1.SetAudioVolume( Glosnosc_ProgressBar.Position ); // Jeżeli nie jest wczytany plik to nic się nie zmieni.
+  zti := Czas_ProgressBar.Width;
 
-  Karaoke_Form.BringToFront();;
+  if zti <= 0 then
+    zti := 1;
 
-
-  Screen.Cursor := crDefault;
-
-  Muzyka_EditButton.Text := adres_pliku;
-
-  needStop := false;
-
-  Czas_ProgressBar.Position := 0;
-  Czas_ProgressBar.Max := PasLibVlcPlayer1.GetVideoLenInMs();
-
-  Czas_Dol_ProgressBar.Position := 0;
-  Czas_Dol_ProgressBar.Max := Czas_ProgressBar.Max;
+  procent := 100 * pozycja_f / zti;
 
 
-  sciezka_do_pliku := adres_pliku;
+  if procent < 0 then
+    procent := 0
+  else
+  if procent > 100 then
+    procent := 100;
 
-  zts := ExtractFileExt( adres_pliku );
-
-  zts := ReverseString( zts );
-  sciezka_do_pliku := ReverseString( sciezka_do_pliku );
-  sciezka_do_pliku := StringReplace( sciezka_do_pliku, zts, '', [] );
-  sciezka_do_pliku := ReverseString( sciezka_do_pliku );
-
-
-  if FindFirst( sciezka_do_pliku + '.esama_karaoke', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
-    begin
-
-      // Istnieje.
-
-      SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
-
-      Wczytaj_Napisy( sciezka_do_pliku + '.esama_karaoke' );
-
-    end
-  else//if FindFirst( sciezka_do_pliku + '.esama_karaoke', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
-  if FindFirst( sciezka_do_pliku + '.srt', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
-    begin
-
-      // Istnieje.
-
-      SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
-
-      Wczytaj_Napisy( sciezka_do_pliku + '.srt' );
-
-    end
-  else//if FindFirst( sciezka_do_pliku + '.srt', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
-  if FindFirst( sciezka_do_pliku + '.txt', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
-    begin
-
-      // Istnieje.
-
-      SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
-
-      Wczytaj_Napisy( sciezka_do_pliku + '.txt' );
+  procent := procent / 100;
 
 
-    end
-  else//if FindFirst( sciezka_do_pliku + '.txt', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
-    SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
+  //Memo1.Lines.Add(  FloatToStr( procent )  );
+  //Memo1.Lines.Add(  FloatToStr( PasLibVlcPlayer1.GetVideoLenInMs() * procent )  );
+  //Memo1.Lines.Add(  IntToStr( Round( PasLibVlcPlayer1.GetVideoLenInMs() * procent ) )  );
 
-  PasLibVlcPlayer1.SetVideoSubtitleById( -1 ); // Wyłączy standardowe wyświetlanie napisów w odtwarzaczu.
+
+  PasLibVlcPlayer1.SetVideoPosInMs(  Round( PasLibVlcPlayer1.GetVideoLenInMs() * procent )  );
 
   Synchronizuj_Milisekundy_Filmu();
 
-end;//---//Funkcja Otworz_Plik().
+end;//---//Funkcja Czas_Pasek_Click().
 
-//Funkcja Wczytaj_Napisy().
-procedure TKaraoke_Form.Wczytaj_Napisy( const adres_pliku: string );
+//Funkcja Dopisz_Plik_Do_Uruchomienia().
+procedure TKaraoke_Form.Dopisz_Plik_Do_Uruchomienia();
+var
+  search_rec : TSearchRec;
+  tekst_l : TStringList;
+  i : integer;
+  zts,
+  sciezka_do_pliku
+    : string;
+begin
 
-  //Funkcja Dekoduj_Napis_Do_Znaku() w Wczytaj_Napisy().
+  sciezka_do_pliku := '';
+
+
+  for i := 0 to ParamCount do
+    begin
+
+      // Sprawdza czy w parametrach jest adres jakiegoś pliku do otworzenia.
+
+      zts := AnsiLowerCase(   ExtractFileExt(  ParamStr( i )  )   );
+
+      if Pos( '.exe', zts ) > 0 then
+        Continue;
+
+      sciezka_do_pliku := ParamStr( i );
+
+    end;
+  //---//for i := 0 to ParamCount do
+
+
+  if Trim( sciezka_do_pliku ) = '' then
+    Exit;
+
+  i := 0;
+  zts := ExtractFilePath( Application.ExeName ) + 'Karaoke_plik';
+
+  while i <= 5 do
+    begin
+
+      if FindFirst( zts, faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
+        begin
+
+          // Istnieje.
+          // Jeżeli plik istnieje - jest przetwarzany przez inną instancję programu, oczekiwanie na zakończenie przetwarzania.
+
+          inc( i );
+
+          SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
+
+          if i >= 5 then
+            Exit;
+
+          Sleep( 1000 );
+
+        end
+      else//if FindFirst( zts + '.esama_karaoke', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
+        Break; // Nie istnieje.
+
+    end;
+  //---//while i <= 5 do
+
+  tekst_l := TStringList.Create();
+
+  tekst_l.Add( '' );
+  tekst_l.Add( sciezka_do_pliku );
+
+  //tekst_l.SaveToFile( zts,  TEncoding.UTF8 ); //???
+  tekst_l.SaveToFile( zts );
+
+  tekst_l.Free();
+
+end;//---//Funkcja Dopisz_Plik_Do_Uruchomienia().
+
+//FormParamStr().
+procedure TKaraoke_Form.FormParamStr();
+var
+  i : integer;
+  //zts : string;
+  //search_rec : TSearchRec;
+begin
+
+  for i := 0 to ParamCount do
+    begin
+
+      //Memo1.Lines.Add(  ParamStr( i )  );
+      //Memo1.Lines.Add(  IntToStr( i )  );
+
+      if Otworz_Plik_Multimedialny_Pasujacy_Do_Napisow(  ParamStr( i )  ) then
+        Break;
+
+      //zts := AnsiLowerCase(   ExtractFileExt(  ParamStr( i )  )   );
+      //
+      //if Pos( '.exe', zts ) > 0 then
+      //  Continue;
+      //
+      //if   (  Pos( '.srt', zts ) > 0  )
+      //  or (  Pos( '.txt', zts ) > 0  )
+      //  //or (  Pos( '.exe', zts ) > 0  )
+      //  or (  Pos( '.esama_karaoke', zts ) > 0  ) then
+      //  begin
+      //
+      //    if FindFirst(  ExtractFilePath(  ParamStr( i )  ) + '*.*', faAnyFile, search_rec  ) = 0 then // Application potrzebuje w uses Forms.
+      //      begin
+      //
+      //        repeat
+      //
+      //          //zts := ParamStr( i );
+      //          //zts := AnsiLowerCase(  ExtractFileNameOnly( search_rec.Name )  );
+      //          //zts := AnsiLowerCase(   ExtractFileName(  ParamStr( i )  )   );
+      //
+      //          if    ( search_rec.Attr <> faDirectory )
+      //            and ( search_rec.Name <> '.' )
+      //            and ( search_rec.Name <> '..' )
+      //            and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> zts   )
+      //            and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> '.srt'   )
+      //            and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> '.txt'   )
+      //            and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> '.esama_karaoke'   )
+      //            and (    AnsiLowerCase(  ExtractFileNameOnly( search_rec.Name )  ) = AnsiLowerCase(   ExtractFileNameOnly(  ParamStr( i )  )   )    ) then
+      //              begin
+      //
+      //                zts := ExtractFilePath(  ParamStr( i )  ) + search_rec.Name;
+      //                Memo1.Lines.Add( zts );
+      //
+      //                Muzyka_EditButton.Text := zts;
+      //                Otworz_Plik( zts );
+      //
+      //                Break;
+      //
+      //              end;
+      //
+      //        until FindNext( search_rec ) <> 0 //Zwraca dane kolejnego pliku zgodnego z parametrami wcześniej wywołanej funkcji FindFirst. Jeżeli można przejść do następnego znalezionego pliku zwraca 0.
+      //
+      //      end;
+      //    //---//if FindFirst(  ExtractFilePath(  ParamStr( i )  ), faAnyFile, search_rec  ) = 0 then
+      //
+      //    SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
+      //
+      //    //Memo1.Lines.Add(  IntToStr( i )  );
+      //
+      //    Break;
+      //
+      //  end;
+      ////---//if   (  Pos( '.srt', zts ) > 0  ) (...)
+
+    end;
+  //---//for i := 0 to ParamCount do
+
+end;//---//FormParamStr().
+
+//Funkcja Glosnosc_Pasek_Click().
+procedure TKaraoke_Form.Glosnosc_Pasek_Click( const pozycja_f : integer );
+var
+  procent : real;
+  zti : integer;
+begin
+
+  // Gdy wartość wynosi 0 to zgłasza błąd dzielenia przez 0.
+
+  //Memo1.Lines.Add(  FloatToStr( pozycja_f )  );
+
+  if Glosnosc_ProgressBar.Width = 0 then
+    begin
+
+      PasLibVlcPlayer1.SetAudioVolume( glosnosc__poziom__minimalny_c );
+      Exit;
+
+    end;
+  //---//if Glosnosc_ProgressBar.Width = 0 then
+
+
+  zti := Glosnosc_ProgressBar.Width;
+
+  if zti <= 0 then
+    zti := 1;
+
+  procent := 100 * pozycja_f / zti;
+
+
+  if procent < 0 then
+    procent := 0;
+
+  if procent > 100 then
+    procent := 100;
+
+  procent := procent / 100;
+
+  zti := Round( 200 * procent );
+
+  if zti < glosnosc__poziom__minimalny_c then
+    zti := glosnosc__poziom__minimalny_c
+  else
+  if zti > glosnosc__poziom__maksymalny_c then
+    zti := glosnosc__poziom__maksymalny_c;
+
+  //Memo1.Lines.Add(  FloatToStr( procent )  );
+  //Memo1.Lines.Add(  FloatToStr( 200 * procent )  );
+  //Memo1.Lines.Add(  IntToStr( zti )  );
+
+
+  PasLibVlcPlayer1.SetAudioVolume( zti );
+
+end;//---//Funkcja Glosnosc_Pasek_Click().
+
+//Funkcja Informacja_Tekst_Wyswietl().
+procedure TKaraoke_Form.Informacja_Tekst_Wyswietl( const napis: string; const liczba : variant; const wyswietlaj_zawsze_f : boolean = false );
+begin
+
+  if   ( wyswietlaj_zawsze_f )
+    or ( Wyswietlaj_Informacje_O_Zdarzeniu_CheckBox.Checked ) then
+    begin
+
+      if liczba <> null then
+        Informacja_StaticText.Caption := napis + ' ' + Trim(  FormatFloat( '### ### ### ### ##0', liczba )  ) + '.'
+      else//if liczba <> null then
+        Informacja_StaticText.Caption := napis + '.';
+
+      Informacja_StaticText.Visible := true;
+
+      informacja_czas := Now();
+
+      //Przerysuj_Zaslone();
+
+    end;
+  //---//if   ( wyswietlaj_zawsze_f ) (...)
+
+end;//Funkcja Informacja_Tekst_Wyswietl().
+
+//Funkcja Linie_Spiewu_Odstep_Okresl().
+function TKaraoke_Form.Linie_Spiewu_Odstep_Okresl() : integer;
+begin
+
+  // Wyrażone procentem wysokości okna filmu.
+
+  Result := Round( PasLibVlcPlayer1.Height * Linie_Spiewu_Odstep_SpinEdit.Value / 100 );
+
+end;//---//Funkcja Linie_Spiewu_Odstep_Okresl().
+
+//Funkcja Mysz__Przycisk_Nacisniety__Procent_Wylicz().
+procedure TKaraoke_Form.Mysz__Przycisk_Nacisniety__Procent_Wylicz( const x_f, y_f : integer; const ustaw_f : boolean = false );
+
+  //Funkcja Milisekundy_W_Napis() w Mysz__Przycisk_Nacisniety__Procent_Wylicz().
+  function Milisekundy_W_Napis( milisekundy_f : integer ) : string;
+  var
+    godzin,
+    minut,
+    sekund
+      : integer;
+  begin
+
+    Result := '';
+
+    godzin := 0;
+    minut := 0;
+    sekund := 0;
+
+    if milisekundy_f >= 1000 then
+      begin
+
+        sekund := Trunc( milisekundy_f * 0.001 );
+        milisekundy_f := milisekundy_f - sekund * 1000;
+
+
+        if sekund >= 60 then
+          begin
+
+            minut := Trunc( sekund / 60 );
+            sekund := sekund - minut * 60;
+
+
+            if minut >= 60 then
+              begin
+
+                godzin:= Trunc( sekund / 60 );
+                minut:= minut - godzin * 60;
+
+              end;
+            //---//if minut >= 60 then
+
+          end;
+        //---//if sekund >= 60 then
+
+      end;
+    //---//if milisekund >= 1000 then
+
+
+    if godzin > 0 then
+      Result := Result + Trim(  FormatFloat( '### ### ### ### ##0', godzin )  ) + ' ';
+
+    Result := Result +
+      Trim(  FormatFloat( '00', minut )  ) +
+      ':' +
+      Trim(  FormatFloat( '00', sekund )  );
+      // + '.' + Trim(  FormatFloat( '0000', milisekund )  );
+
+  end;//---//Funkcja Milisekundy_W_Napis() w Mysz__Przycisk_Nacisniety__Procent_Wylicz().
+
+var
+  czy_minus,
+  czy_poziom
+    : boolean;
+
+  milisekund__po_zmianie,
+  milisekund__roznica,
+  ruch__pion_procent
+    : integer;
+
+  ruch__poziom_procent : single;
+
+  zts : string;
+begin//Funkcja Mysz__Przycisk_Nacisniety__Procent_Wylicz().
+
+  if   ( PasLibVlcPlayer1.Height = 0 )
+    or ( PasLibVlcPlayer1.Width = 0 ) then
+    Exit;
+
+
+  ruch__pion_procent :=
+      PasLibVlcPlayer1.GetAudioVolume()
+    + Round(  100 * ( mysz__przycisk_nacisniety__y__start_g - y_f ) / PasLibVlcPlayer1.Height  );
+
+  if ruch__pion_procent < glosnosc__poziom__minimalny_c then
+    ruch__pion_procent := glosnosc__poziom__minimalny_c
+  else
+  if ruch__pion_procent > glosnosc__poziom__maksymalny_c then
+    ruch__pion_procent := glosnosc__poziom__maksymalny_c;
+
+
+  ruch__poziom_procent :=
+      PasLibVlcPlayer1.GetVideoPosInPercent()
+    + (  100 * ( x_f - mysz__przycisk_nacisniety__x__start_g ) / PasLibVlcPlayer1.Width  )
+    * 0.5;
+
+  if ruch__poziom_procent < 0 then
+    ruch__poziom_procent := 0
+  else
+  if ruch__poziom_procent > 100 then
+    ruch__poziom_procent := 100;
+
+
+  czy_poziom := Abs( mysz__przycisk_nacisniety__x__start_g - x_f ) > Abs( mysz__przycisk_nacisniety__y__start_g - y_f );
+
+
+  if ustaw_f then
+    begin
+
+      if czy_poziom then
+        begin
+
+          PasLibVlcPlayer1.SetVideoPosInPercent( ruch__poziom_procent );
+
+          Synchronizuj_Milisekundy_Filmu();
+
+
+          PasLibVlcPlayer1MediaPlayerTimeChanged( nil, 0 );
+
+        end
+      else//if czy_poziom then
+        PasLibVlcPlayer1.SetAudioVolume( ruch__pion_procent );
+
+    end;
+  //---//if ustaw_f then
+
+
+  if czy_poziom then
+    begin
+
+      milisekund__po_zmianie := Round( PasLibVlcPlayer1.GetVideoLenInMs() * ruch__poziom_procent * 0.01 );
+
+      milisekund__roznica := PasLibVlcPlayer1.GetVideoPosInMs();
+
+      milisekund__roznica := milisekund__po_zmianie - milisekund__roznica;
+
+      czy_minus := milisekund__roznica < 0;
+
+      milisekund__roznica := Abs( milisekund__roznica );
+
+
+      zts := Milisekundy_W_Napis( milisekund__roznica );
+
+      if czy_minus then
+        zts := '-' + zts;
+
+
+      zts := zts + ' (' + Milisekundy_W_Napis( milisekund__po_zmianie ) + ' / ';
+
+      if czy_minus then
+        zts := zts + '-';
+
+      zts := zts + Trim(  FormatFloat( '### ### ### ### ##0.00', ruch__poziom_procent )  ) + '%)';
+
+
+      Informacja_Tekst_Wyswietl( 'Postęp: ' + zts, null, true );
+
+    end
+  else//if czy_poziom then
+    Informacja_Tekst_Wyswietl( 'Głośność:', ruch__pion_procent, true );
+
+  //Informacja_Tekst_Wyswietl(   'Wylicz x: ' + Trim(  FormatFloat( '### ### ### ### ##0.00', ruch__poziom_procent )  ) + ' | y ' + Trim(  FormatFloat( '### ### ### ### ##0.00', ruch__pion_procent )  ), null   );
+
+
+end;//---//Funkcja Mysz__Przycisk_Nacisniety__Procent_Wylicz().
+
+//Funkcja Napisy__Przelicz().
+procedure TKaraoke_Form.Napisy__Przelicz();
+var
+  i,
+  j
+    : integer;
+  czy_ukryc_napis : boolean;
+begin
+
+  //BeginFormUpdate();
+
+  for i := 0 to Length( napisy_t ) - 1 do //gdy pusta = 0; z jednym elementem = 1
+    if napisy_t[ i ] <> nil then
+      begin
+
+        //j := Ustal_Pozycje(  napisy_t[ 0 ], DateUtils.MilliSecondsBetween( Now(), czas_start )  );
+        //j := Ustal_Pozycje(  napisy_t[ 0 ], PasLibVlcPlayer1.GetVideoPosInMs()  );
+
+        //Karaoke_Form.Caption := IntToStr( j );
+
+
+        if not Tryb_Testowy_Napisow_CheckBox.Checked then
+          begin
+
+            //j := Ustal_Pozycje(  napisy_t[ i ], PasLibVlcPlayer1.GetVideoPosInMs()  );
+
+            if Wyswietlaj_Napisy_Wedlug_RadioGroup.ItemIndex in [ 0, 1 ] then // zegara, filmu.
+              j := Ustal_Pozycje(  napisy_t[ i ], PasLibVlcPlayer1.GetVideoPosInMs()  )
+            else//if Wyswietlaj_Napisy_Wedlug_RadioGroup.ItemIndex in [ 0, 1 ] then // filmu.
+              j := Ustal_Pozycje( napisy_t[ i ], milisekundy_filmu );
+
+          end
+        else//if not Tryb_Testowy_Napisow_CheckBox.Checked then
+          j := Ustal_Pozycje(  napisy_t[ i ], DateUtils.MilliSecondsBetween( Now(), czas_start )  );
+
+
+        czy_ukryc_napis := false;
+
+        if Ukrywaj_Napisy_Wedlug_RadioGroup.ItemIndex = 0 then
+          begin
+
+            // Górnej krawędzi.
+
+            if   ( j <= 0 )
+              or ( j <= PasLibVlcPlayer1.Top ) then
+              czy_ukryc_napis := true;
+
+          end
+        else//if Ukrywaj_Napisy_Wedlug_RadioGroup.ItemIndex = 0 then
+          begin
+
+            // Dolnej krawędzi.
+            // Ukrywaj napisy gdy dolna krawędź opuści obszar śpiewu (plus margines).
+
+            if j + napisy_t[ i ].Height <= Linia_Spiewu_Gora_StaticText.Top - Linie_Spiewu_Odstep_Okresl() then
+              czy_ukryc_napis := true;
+
+          end;
+        //---//if Ukrywaj_Napisy_Wedlug_RadioGroup.ItemIndex = 0 then
+
+
+
+        //if   ( j <= 0 )
+        //or ( j <= PasLibVlcPlayer1.Top )
+        if   ( czy_ukryc_napis )
+          or ( j >= Karaoke_Form.Height )
+          or ( j >= PasLibVlcPlayer1.Top + PasLibVlcPlayer1.Height ) then
+          begin
+
+            napisy_t[ i ].Visible := false;
+            napisy_t[ i ].Top := -100;
+
+          end
+        else//if   ( j <= 0 ) (...)
+          begin
+
+            napisy_t[ i ].Visible := true;
+            napisy_t[ i ].Top := j;
+
+          end;
+        //---//if   ( j <= 0 ) (...)
+
+
+
+        if napisy_t[ i ].Visible then
+          napisy_t[ i ].Left := Round(  ( PasLibVlcPlayer1.Width - napisy_t[ i ].Width ) / 2  );
+
+        Application.ProcessMessages();
+
+        //napisy_t[ i ].Top := Ustal_Pozycje(  napisy_t[ i ], DateUtils.MilliSecondsBetween( Now(), czas_start )  );
+        //napisy_t[ i ].Top := Ustal_Pozycje(  napisy_t[ i ], PasLibVlcPlayer1.GetVideoPosInMs()  )
+
+
+      end;
+    //---//if napisy_t[ i ] <> nil then
+
+  //EndFormUpdate();
+
+end;//---//Funkcja Napisy__Przelicz().
+
+//Funkcja Napisy__Wczytaj().
+procedure TKaraoke_Form.Napisy__Wczytaj( const adres_pliku: string );
+
+  //Funkcja Dekoduj_Napis_Do_Znaku() w Napisy__Wczytaj().
   function Dekoduj_Napis_Do_Znaku( napis, znak : string ) : string;
   var
     i : integer;
@@ -491,23 +927,26 @@ procedure TKaraoke_Form.Wczytaj_Napisy( const adres_pliku: string );
         if CharInSet( napis[ i ], [ '0' .. '9'] ) then
           Result := Result + napis[ i ];
 
-  end;//---//Funkcja Dekoduj_Napis_Do_Znaku() w Wczytaj_Napisy().
+  end;//---//Funkcja Dekoduj_Napis_Do_Znaku() w Napisy__Wczytaj().
 
 var
-  i,
-  zti
-    : integer;
-  tekst_l : TStringList;
-  zts,
-  zts_1
-    : string;
   czy_byla_liczba,
   czy_dodac_napis
     : boolean;
+
+  i,
+  zti
+    : integer;
   czas_od,
   czas_do
     : real;
-begin//Funkcja Wczytaj_Napisy().
+
+  zts,
+  zts_1
+    : string;
+
+  tekst_l : TStringList;
+begin//Funkcja Napisy__Wczytaj().
 
   //
   // Format napisów:
@@ -528,7 +967,11 @@ begin//Funkcja Wczytaj_Napisy().
   //123 ghi - napisy
   //
 
-  Zwolnij_Napisy();
+  Napisy__Zwolnij();
+
+
+  if Trim( adres_pliku ) = '' then
+    Exit;
 
 
   tekst_l := TStringList.Create();
@@ -788,8 +1231,12 @@ begin//Funkcja Wczytaj_Napisy().
                 napisy_t[ zti ].Left := Round(  ( PasLibVlcPlayer1.Width - napisy_t[ zti ].Width ) / 2  );
                 napisy_t[ zti ].Top := -100;
 
+                napisy_t[ zti ].OnMouseDown := @PasLibVlcPlayer1MouseDown;
+                napisy_t[ zti ].OnMouseUp := @PasLibVlcPlayer1MouseUp;
+                napisy_t[ zti ].OnMouseMove := @Karaoke_MouseMove;
+
                 Ustaw_Czcionke_Napisu( napisy_t[ zti ] );
-                //napisy_t[ zti ].Ustaw_Czcionke_Napisu();
+                //napisy_t[ zti ].Ustaw_Czcionke_Napisu_N();
                 //Wymiar_Label.Caption := zts_1;
                 //Wymiar_Label.Font.Size := 20;
                 //napisy_t[ zti ].Font.Size := 20;
@@ -798,7 +1245,7 @@ begin//Funkcja Wczytaj_Napisy().
                 //napisy_t[ zti ].Width := Wymiar_Label.Width;
                 //napisy_t[ zti ].Height := Wymiar_Label.Height;
 
-                Memo1.Lines.Add(   Trim(  FormatFloat( '### ### ##0', czas_od )  ) + ' > ' + Trim(  FormatFloat( '### ### ##0', czas_do )  ) + ' ' + zts_1   ); // Test.
+                Memo1.Lines.Add(   Trim(  FormatFloat( '### ### ### ### ##0', czas_od )  ) + ' > ' + Trim(  FormatFloat( '### ### ### ### ##0', czas_do )  ) + ' ' + zts_1   ); // Test.
 
 
                 czy_byla_liczba := true;
@@ -825,17 +1272,17 @@ begin//Funkcja Wczytaj_Napisy().
 
   Wymiar_Label.Visible := false;
 
-  Memo1.Lines.Add(    'Razem napisów: ' + Trim(   FormatFloat(  '### ### ##0', Length( napisy_t ) - 1  )   ) + '.'    ); // Test.
+  Memo1.Lines.Add(    'Razem napisów: ' + Trim(   FormatFloat(  '### ### ### ### ##0', Length( napisy_t ) - 1  )   ) + '.'    ); // Test.
 
   if not Timer1.Enabled then
     Timer1.Enabled := true; // Zegar czasami się nie włącza.
 
   Screen.Cursor := crDefault;
 
-end;//---//Funkcja Wczytaj_Napisy().
+end;//---//Funkcja Napisy__Wczytaj().
 
-//Funkcja Zwolnij_Napisy().
-procedure TKaraoke_Form.Zwolnij_Napisy();
+//Funkcja Napisy__Zwolnij().
+procedure TKaraoke_Form.Napisy__Zwolnij();
 var
   i : integer;
 begin
@@ -849,125 +1296,204 @@ begin
 
   Screen.Cursor := crDefault;
 
-end;//---//Funkcja Zwolnij_Napisy().
+end;//---//Funkcja Napisy__Zwolnij().
 
-//Funkcja Ustaw_Czcionke_Napisu().
-procedure TKaraoke_Form.Ustaw_Czcionke_Napisu( var napis : TNapis );
+//Funkcja Otworz_Plik().
+procedure TKaraoke_Form.Otworz_Plik( const adres_pliku : string );
+var
+  search_rec : TSearchRec;
+  sciezka_do_pliku,
+  zts
+    : string;
 begin
 
-  if napis = nil then
+  if Trim( adres_pliku ) = '' then
     Exit;
 
-  Wymiar_Label.Caption := napis.Caption;
 
-  napis.Font := Wymiar_Label.Font;
+  Screen.Cursor := crHourGlass;
 
-  napis.Width := Wymiar_Label.Width;
-  napis.Height := Wymiar_Label.Height;
+  PasLibVlcPlayer1.Play(  WideString( adres_pliku )  );
 
-  napis.Color := Wymiar_Label.Color;
 
-end;//---//Funkcja Ustaw_Czcionke_Napisu().
+  if    ( Glosnosc_ProgressBar.Position >= glosnosc__poziom__minimalny_c )
+    and ( Glosnosc_ProgressBar.Position <= glosnosc__poziom__maksymalny_c ) then
+    PasLibVlcPlayer1.SetAudioVolume( Glosnosc_ProgressBar.Position ); // Jeżeli nie jest wczytany plik to nic się nie zmieni.
 
-//Przelicz_Napisy().
-procedure TKaraoke_Form.Przelicz_Napisy();
+  Karaoke_Form.BringToFront();
+
+
+  Screen.Cursor := crDefault;
+
+  Muzyka_EditButton.Text := adres_pliku;
+
+  needStop := false;
+
+  Czas_ProgressBar.Position := 0;
+  Czas_ProgressBar.Max := PasLibVlcPlayer1.GetVideoLenInMs();
+
+  Czas_Dol_ProgressBar.Position := 0;
+  Czas_Dol_ProgressBar.Max := Czas_ProgressBar.Max;
+
+
+  sciezka_do_pliku := adres_pliku;
+
+  zts := ExtractFileExt( adres_pliku );
+
+  zts := StrUtils.ReverseString( zts );
+  sciezka_do_pliku := StrUtils.ReverseString( sciezka_do_pliku );
+  sciezka_do_pliku := StringReplace( sciezka_do_pliku, zts, '', [] );
+  sciezka_do_pliku := StrUtils.ReverseString( sciezka_do_pliku );
+
+
+  if FindFirst( sciezka_do_pliku + '.esama_karaoke', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
+    begin
+
+      // Istnieje.
+
+      SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
+
+      Napisy__Wczytaj( sciezka_do_pliku + '.esama_karaoke' );
+
+    end
+  else//if FindFirst( sciezka_do_pliku + '.esama_karaoke', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
+  if FindFirst( sciezka_do_pliku + '.srt', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
+    begin
+
+      // Istnieje.
+
+      SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
+
+      Napisy__Wczytaj( sciezka_do_pliku + '.srt' );
+
+    end
+  else//if FindFirst( sciezka_do_pliku + '.srt', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
+  if FindFirst( sciezka_do_pliku + '.txt', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
+    begin
+
+      // Istnieje.
+
+      SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
+
+      Napisy__Wczytaj( sciezka_do_pliku + '.txt' );
+
+
+    end
+  else//if FindFirst( sciezka_do_pliku + '.txt', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
+    SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
+
+  PasLibVlcPlayer1.SetVideoSubtitleById( -1 ); // Wyłączy standardowe wyświetlanie napisów w odtwarzaczu.
+
+  Synchronizuj_Milisekundy_Filmu();
+
+end;//---//Funkcja Otworz_Plik().
+
+//Funkcja Otworz_Plik_Multimedialny_Pasujacy_Do_Napisow().
+function TKaraoke_Form.Otworz_Plik_Multimedialny_Pasujacy_Do_Napisow( const adres_pliku : string ) : boolean;
 var
-  i,
-  j
-    : integer;
-  czy_ukryc_napis : boolean;
+  search_rec : TSearchRec;
+  zts : string;
 begin
 
-  //BeginFormUpdate();
+  //
+  // Funkcja znajdzie plik z rozszerzeniem nie exe i nie napisowym i wywoła funkcję otworzenia tego pliku.
+  //
 
-  for i := 0 to Length( napisy_t ) - 1 do //gdy pusta = 0; z jednym elementem = 1
-    if napisy_t[ i ] <> nil then
-      begin
-
-        //j := Ustal_Pozycje(  napisy_t[ 0 ], MilliSecondsBetween( Now(), czas_start )  );
-        //j := Ustal_Pozycje(  napisy_t[ 0 ], PasLibVlcPlayer1.GetVideoPosInMs()  );
-
-        //Karaoke_Form.Caption := IntToStr( j );
+  Result := false;
 
 
-        if not Tryb_Testowy_Napisow_CheckBox.Checked then
-          begin
-
-            //j := Ustal_Pozycje(  napisy_t[ i ], PasLibVlcPlayer1.GetVideoPosInMs()  );
-
-            if Wyswietlaj_Napisy_Wedlug_RadioGroup.ItemIndex in [ 0, 1 ] then // zegara, filmu.
-              j := Ustal_Pozycje(  napisy_t[ i ], PasLibVlcPlayer1.GetVideoPosInMs()  )
-            else//if Wyswietlaj_Napisy_Wedlug_RadioGroup.ItemIndex in [ 0, 1 ] then // filmu.
-              j := Ustal_Pozycje( napisy_t[ i ], milisekundy_filmu );
-
-          end
-        else//if not Tryb_Testowy_Napisow_CheckBox.Checked then
-          j := Ustal_Pozycje(  napisy_t[ i ], MilliSecondsBetween( Now(), czas_start )  );
+  if Trim( adres_pliku ) = '' then
+    Exit;
 
 
-        czy_ukryc_napis := false;
+  zts := AnsiLowerCase(  ExtractFileExt( adres_pliku )  );
 
-        if Ukrywaj_Napisy_Wedlug_RadioGroup.ItemIndex = 0 then
-          begin
+  if Pos( '.exe', zts ) > 0 then
+    Exit;
 
-            // Górnej krawędzi.
+  if   (  Pos( '.srt', zts ) > 0  )
+    or (  Pos( '.txt', zts ) > 0  )
+    //or (  Pos( '.exe', zts ) > 0  )
+    or (  Pos( '.esama_karaoke', zts ) > 0  ) then
+    begin
 
-            if   ( j <= 0 )
-              or ( j <= PasLibVlcPlayer1.Top ) then
-              czy_ukryc_napis := true;
+      if FindFirst(  ExtractFilePath( adres_pliku ) + '*.*', faAnyFile, search_rec  ) = 0 then // Application potrzebuje w uses Forms.
+        begin
 
-          end
-        else//if Ukrywaj_Napisy_Wedlug_RadioGroup.ItemIndex = 0 then
-          begin
+          repeat
 
-            // Dolnej krawędzi.
-            // Ukrywaj napisy gdy dolna krawędź opuści obszar śpiewu (plus margines).
+            if    ( search_rec.Attr <> faDirectory )
+              and ( search_rec.Name <> '.' )
+              and ( search_rec.Name <> '..' )
+              and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> zts   )
+              and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> '.srt'   )
+              and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> '.txt'   )
+              and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> '.esama_karaoke'   )
+              //and (    AnsiLowerCase(  ExtractFileNameOnly( search_rec.Name )  ) = AnsiLowerCase(   ExtractFileNameOnly( adres_pliku )   )    ) then
+              //and (    AnsiLowerCase(   ExtractFileName(  FileUtil.ExtractFileNameWithoutExt( search_rec.Name )  )   ) = AnsiLowerCase(   ExtractFileName(  FileUtil.ExtractFileNameWithoutExt( adres_pliku )  )   )    ) then // Zmiana w lazarusie 2.0 z ExtractFileNameOnly().
+              and (    AnsiLowerCase(   ExtractFileName(  LazFileUtils.ExtractFileNameWithoutExt( search_rec.Name )  )   ) = AnsiLowerCase(   ExtractFileName(  LazFileUtils.ExtractFileNameWithoutExt( adres_pliku )  )   )    ) then // Zmiana w lazarusie 3.0 z FileUtil.
+                begin
 
-            if j + napisy_t[ i ].Height <= Linia_Spiewu_Gora_StaticText.Top - Linie_Spiewu_Odstep_Okresl() then
-              czy_ukryc_napis := true;
+                  Result := true;
 
-          end;
-        //---//if Ukrywaj_Napisy_Wedlug_RadioGroup.ItemIndex = 0 then
+                  zts := ExtractFilePath( adres_pliku ) + search_rec.Name;
+                  Memo1.Lines.Add( zts );
+
+                  Muzyka_EditButton.Text := zts;
+                  Otworz_Plik( zts );
+
+                  Break;
+
+                end;
+
+          until FindNext( search_rec ) <> 0 // Zwraca dane kolejnego pliku zgodnego z parametrami wcześniej wywołanej funkcji FindFirst. Jeżeli można przejść do następnego znalezionego pliku zwraca 0.
+
+        end;
+      //---//if FindFirst(  ExtractFilePath( adres_pliku ), faAnyFile, search_rec  ) = 0 then
+
+      SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
+
+    end;
+  //---//if   (  Pos( '.srt', zts ) > 0  ) (...)
+
+end;//---//Funkcja Otworz_Plik_Multimedialny_Pasujacy_Do_Napisow().
+
+//Funkcja Pozycja_Obszaru_Spiewu_Okresl().
+function TKaraoke_Form.Pozycja_Obszaru_Spiewu_Okresl() : integer;
+begin
+
+  // Wyrażone procentem wysokości okna filmu.
+
+  Result := Round( PasLibVlcPlayer1.Height * Pozycja_Obszaru_Spiewu_SpinEdit.Value / 100 );
+
+end;//---//Funkcja Pozycja_Obszaru_Spiewu_Okresl().
+
+//Funkcja Przerysuj_Zaslone().
+procedure TKaraoke_Form.Przerysuj_Zaslone( const wymus : boolean = false );
+begin
+
+  // Czasami na marginesach wyświetlacza filmu zostają przerysowane fragmenty innych elementów okna.
+
+  if    ( not wymus )
+    and ( Nie_Odswiezaj_Widoku_CheckBox.Checked ) then
+    Exit;
 
 
+  PasLibVlcPlayer1.Repaint();
 
-        //if   ( j <= 0 )
-        //or ( j <= PasLibVlcPlayer1.Top )
-        if   ( czy_ukryc_napis )
-          or ( j >= Karaoke_Form.Height )
-          or ( j >= PasLibVlcPlayer1.Top + PasLibVlcPlayer1.Height ) then
-          begin
+  Zaslona_Panel.Visible := not Zaslona_Panel.Visible;
 
-            napisy_t[ i ].Visible := false;
-            napisy_t[ i ].Top := -100;
+end;//---//Funkcja Przerysuj_Zaslone().
 
-          end
-        else//if   ( j <= 0 ) (...)
-          begin
+//Funkcja Synchronizuj_Milisekundy_Filmu().
+procedure TKaraoke_Form.Synchronizuj_Milisekundy_Filmu();
+begin
 
-            napisy_t[ i ].Visible := true;
-            napisy_t[ i ].Top := j;
+  sekcja_krytyczna.Enter();
+  milisekundy_filmu := PasLibVlcPlayer1.GetVideoPosInMs();
+  sekcja_krytyczna.Leave();
 
-          end;
-        //---//if   ( j <= 0 ) (...)
-
-
-
-        if napisy_t[ i ].Visible then
-          napisy_t[ i ].Left := Round(  ( PasLibVlcPlayer1.Width - napisy_t[ i ].Width ) / 2  );
-
-        Application.ProcessMessages();
-
-        //napisy_t[ i ].Top := Ustal_Pozycje(  napisy_t[ i ], MilliSecondsBetween( Now(), czas_start )  );
-        //napisy_t[ i ].Top := Ustal_Pozycje(  napisy_t[ i ], PasLibVlcPlayer1.GetVideoPosInMs()  )
-
-
-      end;
-    //---//if napisy_t[ i ] <> nil then
-
-  //EndFormUpdate();
-
-end;//---//Przelicz_Napisy().
+end;//---//Funkcja Synchronizuj_Milisekundy_Filmu().
 
 //Funkcja Ustal_Pozycje().
 function TKaraoke_Form.Ustal_Pozycje( napis : TNapis; czas_filmu_aktualny_f : integer; const loguj : boolean = false ) : integer;
@@ -989,7 +1515,7 @@ begin
   czas_trwania_napisu := ( napis.czas_do - napis.czas_od ) / 1000;
 
   if loguj then
-    Memo1.Lines.Add(   'czas_trwania_napisu: ' + Trim(  FormatFloat( '### ### ##0', czas_trwania_napisu )  )   );
+    Memo1.Lines.Add(   'czas_trwania_napisu: ' + Trim(  FormatFloat( '### ### ### ### ##0', czas_trwania_napisu )  )   );
 
   if czas_trwania_napisu <= 0 then
     czas_trwania_napisu := 1;
@@ -998,7 +1524,7 @@ begin
   predkosc_napisu := Round(  ( 2 * Linie_Spiewu_Odstep_Okresl() + napis.Height + Linia_Spiewu_Dol_StaticText.Height ) / czas_trwania_napisu  );
 
   if loguj then
-    Memo1.Lines.Add(   'predkosc_napisu: ' + Trim(  FormatFloat( '### ### ##0', predkosc_napisu )  )   );
+    Memo1.Lines.Add(   'predkosc_napisu: ' + Trim(  FormatFloat( '### ### ### ### ##0', predkosc_napisu )  )   );
 
   if predkosc_napisu <= 0 then
     predkosc_napisu := 1;
@@ -1006,7 +1532,7 @@ begin
 
 
   if loguj then
-    Memo1.Lines.Add(   'Pozycja_Obszaru_Spiewu: ' + Trim(  FormatFloat( '### ### ##0', Pozycja_Obszaru_Spiewu_Okresl() )  )   );
+    Memo1.Lines.Add(   'Pozycja_Obszaru_Spiewu: ' + Trim(  FormatFloat( '### ### ### ### ##0', Pozycja_Obszaru_Spiewu_Okresl() )  )   );
 
   //przesuniecie_do_okna := 0;
 
@@ -1026,7 +1552,7 @@ begin
 
 
   if loguj then
-    Memo1.Lines.Add(   'przesuniecie_do_okna: ' + Trim(  FormatFloat( '### ### ##0', przesuniecie_do_okna )  )   );
+    Memo1.Lines.Add(   'przesuniecie_do_okna: ' + Trim(  FormatFloat( '### ### ### ### ##0', przesuniecie_do_okna )  )   );
 
 
   //Result := przesuniecie_do_okna - Round(  ( czas_filmu_aktualny_f / 1000 ) * predkosc_napisu - ( napis.czas_od / 1000 ) * predkosc_napisu + ( Przesuniecie_Napisow_SpinEdit.Value / 1000 ) * predkosc_napisu  );
@@ -1042,9 +1568,9 @@ begin
   if loguj then
     begin
 
-      Memo1.Lines.Add(   'czas_filmu_aktualny_f * predkosc_napisu: ' + Trim(  FormatFloat( '### ### ##0', czas_filmu_aktualny_f * predkosc_napisu )  )   );
-      Memo1.Lines.Add(   '- napis.czas_od * predkosc_napisu: ' + Trim(  FormatFloat( '### ### ##0', napis.czas_od * predkosc_napisu )  )   );
-      Memo1.Lines.Add(   '+ Przesuniecie_Napisow * predkosc_napisu: ' + Trim(  FormatFloat( '### ### ##0', Przesuniecie_Napisow_SpinEdit.Value * predkosc_napisu )  )   );
+      Memo1.Lines.Add(   'czas_filmu_aktualny_f * predkosc_napisu: ' + Trim(  FormatFloat( '### ### ### ### ##0', czas_filmu_aktualny_f * predkosc_napisu )  )   );
+      Memo1.Lines.Add(   '- napis.czas_od * predkosc_napisu: ' + Trim(  FormatFloat( '### ### ### ### ##0', napis.czas_od * predkosc_napisu )  )   );
+      Memo1.Lines.Add(   '+ Przesuniecie_Napisow * predkosc_napisu: ' + Trim(  FormatFloat( '### ### ### ### ##0', Przesuniecie_Napisow_SpinEdit.Value * predkosc_napisu )  )   );
 
       Memo1.Lines.Add(  'Razem: ' + FloatToStr(
           czas_filmu_aktualny_f * predkosc_napisu
@@ -1078,252 +1604,29 @@ begin
   //Result := Result + napis.Height;
   //---// D -> G.
 
-  //Memo1.Lines.Add(   Trim(  FormatFloat( '### ### ##0', Result )  )   );
+  //Memo1.Lines.Add(   Trim(  FormatFloat( '### ### ### ### ##0', Result )  )   );
 
   //Result := 0;
 
 end;//---//Funkcja Ustal_Pozycje().
 
-//Funkcja Czas_Pasek_Click().
-procedure TKaraoke_Form.Czas_Pasek_Click( pozycja : integer );
-var
-  procent : real;
-  zti : integer;
+//Funkcja Ustaw_Czcionke_Napisu().
+procedure TKaraoke_Form.Ustaw_Czcionke_Napisu( var napis : TNapis );
 begin
 
-  //Memo1.Lines.Add(  FloatToStr( pozycja )  );
-
-  if Czas_ProgressBar.Width = 0 then
-    begin
-
-      PasLibVlcPlayer1.SetVideoPosInMs( 0 );
-      Exit;
-
-    end;
-  //---//if Czas_ProgressBar.Width = 0 then
-
-
-  zti := Czas_ProgressBar.Width;
-
-  if zti <= 0 then
-    zti := 1;
-
-  procent := 100 * pozycja / zti;
-
-
-  if procent < 0 then
-    procent := 0;
-
-  if procent > 100 then
-    procent := 100;
-
-  procent := procent / 100;
-
-
-  //Memo1.Lines.Add(  FloatToStr( procent )  );
-  //Memo1.Lines.Add(  FloatToStr( PasLibVlcPlayer1.GetVideoLenInMs() * procent )  );
-  //Memo1.Lines.Add(  IntToStr( Round( PasLibVlcPlayer1.GetVideoLenInMs() * procent ) )  );
-
-
-  PasLibVlcPlayer1.SetVideoPosInMs(  Round( PasLibVlcPlayer1.GetVideoLenInMs() * procent )  );
-
-  Synchronizuj_Milisekundy_Filmu();
-
-end;//---//Funkcja Czas_Pasek_Click().
-
-//Funkcja Glosnosc_Pasek_Click().
-procedure TKaraoke_Form.Glosnosc_Pasek_Click( pozycja : integer );
-var
-  procent : real;
-  zti : integer;
-begin
-
-  // Gdy wartość wynosi 0 to zgłasza błąd dzielenia przez 0.
-
-  //Memo1.Lines.Add(  FloatToStr( pozycja )  );
-
-  if Glosnosc_ProgressBar.Width = 0 then
-    begin
-
-      PasLibVlcPlayer1.SetAudioVolume( 1 );
-      Exit;
-
-    end;
-  //---//if Glosnosc_ProgressBar.Width = 0 then
-
-
-  zti := Glosnosc_ProgressBar.Width;
-
-  if zti <= 0 then
-    zti := 1;
-
-  procent := 100 * pozycja / zti;
-
-
-  if procent < 0 then
-    procent := 0;
-
-  if procent > 100 then
-    procent := 100;
-
-  procent := procent / 100;
-
-  zti := Round( 200 * procent );
-
-  if zti <= 0 then
-    zti := 1;
-
-  //Memo1.Lines.Add(  FloatToStr( procent )  );
-  //Memo1.Lines.Add(  FloatToStr( 200 * procent )  );
-  //Memo1.Lines.Add(  IntToStr( zti )  );
-
-
-  PasLibVlcPlayer1.SetAudioVolume( zti );
-
-end;//---//Funkcja Glosnosc_Pasek_Click().
-
-//Funkcja Pozycja_Obszaru_Spiewu_Okresl().
-function TKaraoke_Form.Pozycja_Obszaru_Spiewu_Okresl() : integer;
-begin
-
-  // Wyrażone procentem wysokości okna filmu.
-
-  Result := Round( PasLibVlcPlayer1.Height * Pozycja_Obszaru_Spiewu_SpinEdit.Value / 100 );
-
-end;//---//Funkcja Pozycja_Obszaru_Spiewu_Okresl().
-
-//Funkcja Linie_Spiewu_Odstep_Okresl().
-function TKaraoke_Form.Linie_Spiewu_Odstep_Okresl() : integer;
-begin
-
-  // Wyrażone procentem wysokości okna filmu.
-
-  Result := Round( PasLibVlcPlayer1.Height * Linie_Spiewu_Odstep_SpinEdit.Value / 100 );
-
-end;//---//Funkcja Linie_Spiewu_Odstep_Okresl().
-
-//Funkcja Przerysuj_Zaslone().
-procedure TKaraoke_Form.Przerysuj_Zaslone( const wymus : boolean = false );
-begin
-
-  // Czasami na marginesach wyświetlacza filmu zostają przerysowane fragmenty innych elementów okna.
-
-  if    ( not wymus )
-    and ( Nie_Odswiezaj_Widoku_CheckBox.Checked ) then
+  if napis = nil then
     Exit;
 
+  Wymiar_Label.Caption := napis.Caption;
 
-  PasLibVlcPlayer1.Repaint();
+  napis.Font := Wymiar_Label.Font;
 
-  Zaslona_Panel.Visible := not Zaslona_Panel.Visible;
+  napis.Width := Wymiar_Label.Width;
+  napis.Height := Wymiar_Label.Height;
 
-end;//---//Funkcja Przerysuj_Zaslone().
+  napis.Color := Wymiar_Label.Color;
 
-//Funkcja Informacja_Tekst_Wyswietl().
-procedure TKaraoke_Form.Informacja_Tekst_Wyswietl( const napis: string; const liczba : variant );
-begin
-
-  if Wyswietlaj_Informacje_O_Zdarzeniu_CheckBox.Checked then
-    begin
-
-      if liczba <> null then
-        Informacja_StaticText.Caption := napis + ' ' + Trim(  FormatFloat( '### ### ##0', liczba )  ) + '.'
-      else//if liczba <> null then
-        Informacja_StaticText.Caption := napis + '.';
-
-      Informacja_StaticText.Visible := true;
-
-      informacja_czas := Now();
-
-      //Przerysuj_Zaslone();
-
-    end;
-  //---//if Wyswietlaj_Informacje_O_Zdarzeniu_CheckBox.Checked then
-
-end;//Funkcja Informacja_Tekst_Wyswietl().
-
-//Funkcja Dopisz_Plik_Do_Uruchomienia().
-procedure TKaraoke_Form.Dopisz_Plik_Do_Uruchomienia();
-var
-  search_rec : TSearchRec;
-  tekst_l : TStringList;
-  i : integer;
-  zts,
-  sciezka_do_pliku
-    : string;
-begin
-
-  sciezka_do_pliku := '';
-
-
-  for i := 0 to ParamCount do
-    begin
-
-      // Sprawdza czy w parametrach jest adres jakiegoś pliku do otworzenia.
-
-      zts := AnsiLowerCase(   ExtractFileExt(  ParamStr( i )  )   );
-
-      if Pos( '.exe', zts ) > 0 then
-        Continue;
-
-      sciezka_do_pliku := ParamStr( i );
-
-    end;
-  //---//for i := 0 to ParamCount do
-
-
-  if Trim( sciezka_do_pliku ) = '' then
-    Exit;
-
-  i := 0;
-  zts := ExtractFilePath( Application.ExeName ) + 'Karaoke_plik';
-
-  while i <= 5 do
-    begin
-
-      if FindFirst( zts, faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
-        begin
-
-          // Istnieje.
-          // Jeżeli plik istnieje - jest przetwarzany przez inną instancję programu, oczekiwanie na zakończenie przetwarzania.
-
-          inc( i );
-
-          SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
-
-          if i >= 5 then
-            Exit;
-
-          Sleep( 1000 );
-
-        end
-      else//if FindFirst( zts + '.esama_karaoke', faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
-        Break; // Nie istnieje.
-
-    end;
-  //---//while i <= 5 do
-
-  tekst_l := TStringList.Create();
-
-  tekst_l.Add( '' );
-  tekst_l.Add( sciezka_do_pliku );
-
-  //tekst_l.SaveToFile( zts,  TEncoding.UTF8 ); //???
-  tekst_l.SaveToFile( zts );
-
-  tekst_l.Free();
-
-end;//---//Funkcja Dopisz_Plik_Do_Uruchomienia().
-
-//Funkcja Synchronizuj_Milisekundy_Filmu().
-procedure TKaraoke_Form.Synchronizuj_Milisekundy_Filmu();
-begin
-
-  sekcja_krytyczna.Enter();
-  milisekundy_filmu := PasLibVlcPlayer1.GetVideoPosInMs();
-  sekcja_krytyczna.Leave();
-
-end;//---//Funkcja Synchronizuj_Milisekundy_Filmu().
+end;//---//Funkcja Ustaw_Czcionke_Napisu().
 
 //---//      ***      Funkcje      ***      //---//
 
@@ -1332,6 +1635,10 @@ procedure TKaraoke_Form.FormCreate( Sender: TObject );
 begin
 
   blokuj_form_show := false;
+
+  mysz__przycisk_nacisniety_g := false;
+  mysz__przycisk_nacisniety__x__start_g := 0;
+  mysz__przycisk_nacisniety__y__start_g := 0;
 
 end;//---//FormCreate().
 
@@ -1344,16 +1651,13 @@ begin
 
   czas_start := 0;
   informacja_czas := 0;
-  kursor_ruch := Now();
+  kursor_ruch_data_czas := Now();
+  milisekundy_filmu := 0;
+  needStop := true;
+  zamykanie := false;
   zegar_systemowy_stop := Now();
 
-  milisekundy_filmu := 0;
-
   //Karaoke_Form.AllowDropFiles := true;
-
-  zamykanie := false;
-  needStop := true;
-
 
   PageControl1.ActivePage := Opcje_TabSheet;
   PasLibVlcPlayer1.Align := alClient;
@@ -1449,12 +1753,12 @@ begin
   //Button2Click( Sender );
 
   //StaticText1.Caption := 'abc' + #13 + 'def' + #13 + 'ghi';
-  //Wymiar_Label.Caption := StaticText1.Caption;;
+  //Wymiar_Label.Caption := StaticText1.Caption;
   //StaticText1.Width := Wymiar_Label.Width;
   //StaticText1.Height := Wymiar_Label.Height;
   ////StaticText1.AutoSize := true;
 
-  //Wczytaj_Napisy( Napisy_EditButton.Text );
+  //Napisy__Wczytaj( Napisy_EditButton.Text );
 
 
   watek := TWatek.Create( false );
@@ -1503,7 +1807,7 @@ begin
 
   PasLibVlcPlayer1.Stop();
 
-  Zwolnij_Napisy();
+  Napisy__Zwolnij();
 
   //watek.Suspend();
   //watek.Terminate();
@@ -1540,7 +1844,7 @@ begin
         begin
 
           Napisy_EditButton.Text := FileNames[ i ];
-          Wczytaj_Napisy( FileNames[ i ] );
+          Napisy__Wczytaj( FileNames[ i ] );
 
         end
       else//if   (  Pos( '.srt', zts ) > 0  ) (...)
@@ -1557,82 +1861,6 @@ begin
   //---//for i := Low( FileNames ) to High( FileNames ) do
 
 end;//---//FormDropFiles().
-
-//FormParamStr().
-procedure TKaraoke_Form.FormParamStr();
-var
-  i : integer;
-  //zts : string;
-  //search_rec : TSearchRec;
-begin
-
-  for i := 0 to ParamCount do
-    begin
-
-      //Memo1.Lines.Add(  ParamStr( i )  );
-      //Memo1.Lines.Add(  IntToStr( i )  );
-
-      if Otworz_Plik_Multimedialny_Pasujacy_Do_Napisow(  ParamStr( i )  ) then
-        Break;
-
-      //zts := AnsiLowerCase(   ExtractFileExt(  ParamStr( i )  )   );
-      //
-      //if Pos( '.exe', zts ) > 0 then
-      //  Continue;
-      //
-      //if   (  Pos( '.srt', zts ) > 0  )
-      //  or (  Pos( '.txt', zts ) > 0  )
-      //  //or (  Pos( '.exe', zts ) > 0  )
-      //  or (  Pos( '.esama_karaoke', zts ) > 0  ) then
-      //  begin
-      //
-      //    if FindFirst(  ExtractFilePath(  ParamStr( i )  ) + '*.*', faAnyFile, search_rec  ) = 0 then // Application potrzebuje w uses Forms.
-      //      begin
-      //
-      //        repeat
-      //
-      //          //zts := ParamStr( i );
-      //          //zts := AnsiLowerCase(  ExtractFileNameOnly( search_rec.Name )  );
-      //          //zts := AnsiLowerCase(   ExtractFileName(  ParamStr( i )  )   );
-      //
-      //          if    ( search_rec.Attr <> faDirectory )
-      //            and ( search_rec.Name <> '.' )
-      //            and ( search_rec.Name <> '..' )
-      //            and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> zts   )
-      //            and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> '.srt'   )
-      //            and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> '.txt'   )
-      //            and (   AnsiLowerCase(  ExtractFileExt( search_rec.Name )  ) <> '.esama_karaoke'   )
-      //            and (    AnsiLowerCase(  ExtractFileNameOnly( search_rec.Name )  ) = AnsiLowerCase(   ExtractFileNameOnly(  ParamStr( i )  )   )    ) then
-      //              begin
-      //
-      //                zts := ExtractFilePath(  ParamStr( i )  ) + search_rec.Name;
-      //                Memo1.Lines.Add( zts );
-      //
-      //                Muzyka_EditButton.Text := zts;
-      //                Otworz_Plik( zts );
-      //
-      //                Break;
-      //
-      //              end;
-      //
-      //        until FindNext( search_rec ) <> 0 //Zwraca dane kolejnego pliku zgodnego z parametrami wcześniej wywołanej funkcji FindFirst. Jeżeli można przejść do następnego znalezionego pliku zwraca 0.
-      //
-      //      end;
-      //    //---//if FindFirst(  ExtractFilePath(  ParamStr( i )  ), faAnyFile, search_rec  ) = 0 then
-      //
-      //    SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
-      //
-      //    //Memo1.Lines.Add(  IntToStr( i )  );
-      //
-      //    Break;
-      //
-      //  end;
-      ////---//if   (  Pos( '.srt', zts ) > 0  ) (...)
-
-    end;
-  //---//for i := 0 to ParamCount do
-
-end;//---//FormParamStr().
 
 //FormResize().
 procedure TKaraoke_Form.FormResize( Sender: TObject );
@@ -1655,13 +1883,13 @@ begin
     end;
   //---//if zamykanie then
 
-  //Przyciski_Panel.Caption := FloatToStr(  SecondsBetween( Now(), czas_start )  ) + ' ' + FloatToStr(  MilliSecondsBetween( Now(), czas_start )  );
+  //Przyciski_Panel.Caption := FloatToStr(  DateUtils.SecondsBetween( Now(), czas_start )  ) + ' ' + FloatToStr(  DateUtils.MilliSecondsBetween( Now(), czas_start )  );
   //Przyciski_Panel.Caption := PasLibVlcPlayer1.GetVideoPosStr('hh:mm:ss.ms') + ' ' + IntToStr( PasLibVlcPlayer1.GetVideoPosInMs() ); // / 1000 = s
 
   if Tryb_Testowy_Napisow_CheckBox.Checked then
     begin
 
-      Czas_Test_Label.Caption := TimeToStr( Now() - czas_start ) + '; ' + Trim(   FormatFloat(  '### ### ##0', MilliSecondsBetween( Now(), czas_start )  )   );
+      Czas_Test_Label.Caption := TimeToStr( Now() - czas_start ) + '; ' + Trim(   FormatFloat(  '### ### ### ### ##0', DateUtils.MilliSecondsBetween( Now(), czas_start )  )   );
 
     end;
   //---//if Tryb_Testowy_Napisow_CheckBox.Checked then
@@ -1675,7 +1903,7 @@ begin
       //milisekundy_filmu := milisekundy_filmu + Timer1.Interval;
       //milisekundy_filmu := PasLibVlcPlayer1.GetVideoPosInMs();
 
-      Przelicz_Napisy();
+      Napisy__Przelicz();
 
       if    ( Wyswietlaj_Napisy_Wedlug_RadioGroup.ItemIndex in [ 2 ] ) // czasu narastająco.
         and ( Korekta_Czasu_Narastajaco_Automatyczna_CheckBox.Checked )
@@ -1684,7 +1912,7 @@ begin
 
       if    ( Wyswietlaj_Napisy_Wedlug_RadioGroup.ItemIndex in [ 2 ] ) // czasu narastająco.
         and ( Korekta_Czasu_Narastajaco_Prezentuj_Roznice_CheckBox.Checked ) then
-        Korekta_Czasu_Narastajaco_Prezentuj_Roznice_CheckBox.Caption := FormatFloat( '### ### ##0', ( milisekundy_filmu - PasLibVlcPlayer1.GetVideoPosInMs() ) / 100 );
+        Korekta_Czasu_Narastajaco_Prezentuj_Roznice_CheckBox.Caption := FormatFloat( '### ### ### ### ##0', ( milisekundy_filmu - PasLibVlcPlayer1.GetVideoPosInMs() ) / 100 );
 
 
       if Korekta_Czasu_Narastajaco_Automatyczna_CheckBox.Checked then
@@ -1705,12 +1933,12 @@ begin
 
 
   if    ( Karaoke_Form.WindowState = wsMaximized )
-    and (  SecondsBetween( Now(), kursor_ruch ) > 3  ) then
+    and (  DateUtils.SecondsBetween( Now(), kursor_ruch_data_czas ) > 3  ) then
     Screen.Cursor := crNone;
 
 
   if    ( Informacja_StaticText.Visible )
-    and (  SecondsBetween( Now(), informacja_czas ) >= 2  ) then
+    and (  DateUtils.SecondsBetween( Now(), informacja_czas ) >= 2  ) then
     begin
 
       Informacja_StaticText.Visible := false;
@@ -1721,7 +1949,7 @@ begin
 
 
   if    ( not Systemowy_Timer.Enabled )
-    and (  SecondsBetween( Now(), zegar_systemowy_stop ) > 90 ) then
+    and (  DateUtils.SecondsBetween( Now(), zegar_systemowy_stop ) > 90 ) then
     Systemowy_Timer.Enabled := true; // Gdyby jakiś błąd spowodował nie włączenie zegara systemowego to spróbuje go włączyć tutaj.
 
 
@@ -1852,8 +2080,8 @@ begin//PasLibVlcPlayer1MediaPlayerTimeChanged().
   // Jest 00:00:00.12; 00:00:00.120 powinno być 00:00:00.012; 00:00:00.120.
 
   //Czas_Label.Caption := PasLibVlcPlayer1.GetVideoPosStr('hh:mm:ss.ms') + ' / ' + PasLibVlcPlayer1.GetVideoLenStr('hh:mm:ss.ms');
-  Czas_Label.Caption := Milisekundy_Na_Trzech_Znakach(  PasLibVlcPlayer1.GetVideoPosStr('hh:mm:ss.ms')  ) + ' / ' + Milisekundy_Na_Trzech_Znakach(  PasLibVlcPlayer1.GetVideoLenStr('hh:mm:ss.ms')  );
-  Czas_Ms_Label.Caption := Trim(  FormatFloat( '### ### ##0', PasLibVlcPlayer1.GetVideoPosInMs() )  ) + ' / ' + Trim(  FormatFloat( '### ### ##0', PasLibVlcPlayer1.GetVideoLenInMs() )  );
+  Czas_Label.Caption := Milisekundy_Na_Trzech_Znakach(  PasLibVlcPlayer1.GetVideoPosStr( 'hh:mm:ss.ms' )  ) + ' / ' + Milisekundy_Na_Trzech_Znakach(  PasLibVlcPlayer1.GetVideoLenStr( 'hh:mm:ss.ms' )  );
+  Czas_Ms_Label.Caption := Trim(  FormatFloat( '### ### ### ### ##0', PasLibVlcPlayer1.GetVideoPosInMs() )  ) + ' / ' + Trim(  FormatFloat( '### ### ### ### ##0', PasLibVlcPlayer1.GetVideoLenInMs() )  );
 
   Czas_ProgressBar.Position := PasLibVlcPlayer1.GetVideoPosInMs();
   Czas_Dol_ProgressBar.Position := Czas_ProgressBar.Position;
@@ -1870,7 +2098,7 @@ begin//PasLibVlcPlayer1MediaPlayerTimeChanged().
 
 
   if Wyswietlaj_Napisy_Wedlug_RadioGroup.ItemIndex = 1 then // filmu.
-    Przelicz_Napisy();
+    Napisy__Przelicz();
 
 end;//---//PasLibVlcPlayer1MediaPlayerTimeChanged().
 
@@ -1888,7 +2116,7 @@ procedure TKaraoke_Form.PasLibVlcPlayer1MediaPlayerAudioVolumeChanged( Sender: T
 begin
 
   //Glosnosc_Label.Caption := FloatToStr( volume );
-  Glosnosc_Label.Caption := Trim(  FormatFloat( '### ### ##0', PasLibVlcPlayer1.GetAudioVolume() )  );
+  Glosnosc_Label.Caption := Trim(  FormatFloat( '### ### ### ### ##0', PasLibVlcPlayer1.GetAudioVolume() )  );
 
   Glosnosc_ProgressBar.Position := PasLibVlcPlayer1.GetAudioVolume();
 
@@ -1935,7 +2163,7 @@ end;//---//Otworz_Plik_ButtonClick().
 procedure TKaraoke_Form.Wczytaj_Napisy_ButtonClick( Sender: TObject );
 begin
 
-  Wczytaj_Napisy( Napisy_EditButton.Text );
+  Napisy__Wczytaj( Napisy_EditButton.Text );
 
   Informacja_Tekst_Wyswietl( 'Wczytaj napisy', null );
 
@@ -1945,7 +2173,7 @@ end;//---//Wczytaj_Napisy_ButtonClick().
 procedure TKaraoke_Form.Wyczysc_Napisy_ButtonClick( Sender: TObject );
 begin
 
-  Zwolnij_Napisy();
+  Napisy__Zwolnij();
 
   Informacja_Tekst_Wyswietl( 'Wyczyść napisy', null );
 
@@ -1969,7 +2197,7 @@ begin
   OpenDialog1.Filter := 'Eryzyjskie|*.esama_karaoke|Tekstowe|*.srt; *.txt|Wszystkie|*.*';
 
   if OpenDialog1.Execute() then
-    Wczytaj_Napisy( OpenDialog1.FileName );
+    Napisy__Wczytaj( OpenDialog1.FileName );
 
 end;//---//Napisy_EditButtonButtonClick().
 
@@ -2024,7 +2252,7 @@ begin
   if not Tryb_Testowy_Napisow_CheckBox.Checked then
     PasLibVlcPlayer1.SetVideoPosInMs(  Round( PasLibVlcPlayer1.GetVideoPosInMs() + Skok_Sekundy_SpinEdit.Value * 1000 * mnoznik_skoku )  ) // 3000
   else//if not Tryb_Testowy_Napisow_CheckBox.Checked then
-    czas_start := IncSecond(  czas_start, Round( -Skok_Sekundy_SpinEdit.Value * mnoznik_skoku )  ); // -3
+    czas_start := DateUtils.IncSecond(  czas_start, Round( -Skok_Sekundy_SpinEdit.Value * mnoznik_skoku )  ); // -3
 
 
   Informacja_Tekst_Wyswietl(  'Skok do przodu', Round( Skok_Sekundy_SpinEdit.Value * mnoznik_skoku ) );
@@ -2050,7 +2278,7 @@ begin
   if not Tryb_Testowy_Napisow_CheckBox.Checked then
     PasLibVlcPlayer1.SetVideoPosInMs(  Round( PasLibVlcPlayer1.GetVideoPosInMs() - Skok_Sekundy_SpinEdit.Value * 1000 * mnoznik_skoku )  ) // 3000
   else//if not Tryb_Testowy_Napisow_CheckBox.Checked then
-    czas_start := IncSecond(  czas_start, Round( Skok_Sekundy_SpinEdit.Value * mnoznik_skoku )  ); // 3
+    czas_start := DateUtils.IncSecond(  czas_start, Round( Skok_Sekundy_SpinEdit.Value * mnoznik_skoku )  ); // 3
 
   Informacja_Tekst_Wyswietl(  'Skok do tyłu', Round( Skok_Sekundy_SpinEdit.Value * mnoznik_skoku )  );
 
@@ -2113,8 +2341,11 @@ begin
 
   zti := PasLibVlcPlayer1.GetAudioVolume() - mnoznik_skoku;
 
-  if zti = 0 then
-    zti := 1;
+  if zti < glosnosc__poziom__minimalny_c then
+    zti := glosnosc__poziom__minimalny_c
+  else
+  if zti > glosnosc__poziom__maksymalny_c then
+    zti := glosnosc__poziom__maksymalny_c;
 
   PasLibVlcPlayer1.SetAudioVolume( zti );
 
@@ -2125,7 +2356,9 @@ end;//---//Ciszej_ButtonClick().
 //Glosniej_ButtonClick().
 procedure TKaraoke_Form.Glosniej_ButtonClick( Sender: TObject );
 var
-  mnoznik_skoku : integer;
+  zti,
+  mnoznik_skoku
+    : integer;
 begin
 
   if Sender = nil then
@@ -2133,9 +2366,17 @@ begin
   else//if Sender = nil then
     mnoznik_skoku := 10;
 
-  PasLibVlcPlayer1.SetAudioVolume( PasLibVlcPlayer1.GetAudioVolume() + mnoznik_skoku );
+  zti := PasLibVlcPlayer1.GetAudioVolume() + mnoznik_skoku;
 
-  Informacja_Tekst_Wyswietl( 'Głośniej', PasLibVlcPlayer1.GetAudioVolume() + mnoznik_skoku );
+  if zti < glosnosc__poziom__minimalny_c then
+    zti := glosnosc__poziom__minimalny_c
+  else
+  if zti > glosnosc__poziom__maksymalny_c then
+    zti := glosnosc__poziom__maksymalny_c;
+
+  PasLibVlcPlayer1.SetAudioVolume( zti );
+
+  Informacja_Tekst_Wyswietl( 'Głośniej', zti );
 
 end;//---//Glosniej_ButtonClick().
 
@@ -2326,7 +2567,7 @@ end;//---//Wyswietlaj_Napisy_Wedlug_RadioGroupClick().
 //Czas_Start_Ustaw_ButtonClick().
 procedure TKaraoke_Form.Czas_Start_Ustaw_ButtonClick( Sender: TObject );
 begin
-  //PasLibVlcPlayer1.SetAudioVolume( 1 );
+  //PasLibVlcPlayer1.SetAudioVolume( glosnosc__poziom__minimalny_c );
   //PasLibVlcPlayer1.SetVideoPosInMs( 0 );
 
   if    ( Sender <> nil )
@@ -2357,7 +2598,7 @@ begin
 
       for i := 0 to Length( napisy_t ) - 1 do // Gdy pusta = 0; z jednym elementem = 1.
         if napisy_t[ i ] <> nil then
-          //napisy_t[ i ].Ustaw_Czcionke_Napisu();
+          //napisy_t[ i ].Ustaw_Czcionke_Napisu_N();
           Ustaw_Czcionke_Napisu( napisy_t[ i ] );
 
       Wymiar_Label.Visible := false;
@@ -2442,24 +2683,24 @@ end;//---//Kolor_Linii_Spiewu_ButtonClick().
 //Wczytaj_Ustawienia_ButtonClick().
 procedure TKaraoke_Form.Wczytaj_Ustawienia_ButtonClick( Sender: TObject );
 var
-  plik_ini : TIniFile;
+  plik_ini : IniFiles.TIniFile;
   i : integer;
   zts : string;
 begin
 
-  plik_ini := TIniFile.Create(  ExtractFilePath( Application.ExeName ) + 'Karaoke.ini'  ); // Application potrzebuje w uses Forms.
+  plik_ini := IniFiles.TIniFile.Create(  ExtractFilePath( Application.ExeName ) + 'Karaoke.ini'  ); // Application potrzebuje w uses Forms.
 
   if not Plik_ini.ValueExists( 'Opcje', 'Glosnosc' ) then
     Plik_ini.WriteInteger( 'Opcje', 'Glosnosc', PasLibVlcPlayer1.GetAudioVolume() )
   else
     i := Plik_ini.ReadInteger( 'Opcje', 'Glosnosc', PasLibVlcPlayer1.GetAudioVolume() ); // Jeżeli nie znajdzie to podstawia wartość PasLibVlcPlayer1.GetAudioVolume().
 
-  if    ( i >= 1 )
-    and ( i <= 200 ) then
+  if    ( i >= glosnosc__poziom__minimalny_c )
+    and ( i <= glosnosc__poziom__maksymalny_c ) then
     begin
 
       //PasLibVlcPlayer1.SetAudioVolume( i ); // Jeżeli nie jest wczytany plik to nic się nie zmieni.
-      Glosnosc_Label.Caption := Trim(  FormatFloat( '### ### ##0', i )  );
+      Glosnosc_Label.Caption := Trim(  FormatFloat( '### ### ### ### ##0', i )  );
       Glosnosc_ProgressBar.Position := i;
 
     end;
@@ -2564,10 +2805,15 @@ begin
   else
     Wyswietlaj_Informacje_O_Zdarzeniu_CheckBox.Checked := Plik_ini.ReadBool( 'Opcje', 'Wyswietlaj_Informacje_O_Zdarzeniu', Wyswietlaj_Informacje_O_Zdarzeniu_CheckBox.Checked ); // Jeżeli nie znajdzie to podstawia wartość Wyswietlaj_Informacje_O_Zdarzeniu_CheckBox.Checked.
 
-  if not Plik_ini.ValueExists( 'Opcje', 'Dolny_Pasek_Postepu_Wyswietlaj' ) then
-    Plik_ini.WriteBool( 'Opcje', 'Dolny_Pasek_Postepu_Wyswietlaj', Dolny_Pasek_Postepu_Wyswietlaj_CheckBox.Checked )
+  if not Plik_ini.ValueExists( 'Opcje', 'Dolny_Pasek_Postepu__Ukrywaj' ) then
+    Plik_ini.WriteBool( 'Opcje', 'Dolny_Pasek_Postepu__Ukrywaj', Dolny_Pasek_Postepu__Ukrywaj_CheckBox.Checked )
   else
-    Dolny_Pasek_Postepu_Wyswietlaj_CheckBox.Checked := Plik_ini.ReadBool( 'Opcje', 'Dolny_Pasek_Postepu_Wyswietlaj', Dolny_Pasek_Postepu_Wyswietlaj_CheckBox.Checked ); // Jeżeli nie znajdzie to podstawia wartość Dolny_Pasek_Postepu_Wyswietlaj_CheckBox.Checked.
+    Dolny_Pasek_Postepu__Ukrywaj_CheckBox.Checked := Plik_ini.ReadBool( 'Opcje', 'Dolny_Pasek_Postepu__Ukrywaj', Dolny_Pasek_Postepu__Ukrywaj_CheckBox.Checked ); // Jeżeli nie znajdzie to podstawia wartość Dolny_Pasek_Postepu__Ukrywaj_CheckBox.Checked.
+
+  if not Plik_ini.ValueExists( 'Opcje', 'Dolny_Pasek_Postepu__Wyswietlaj' ) then
+    Plik_ini.WriteBool( 'Opcje', 'Dolny_Pasek_Postepu__Wyswietlaj', Dolny_Pasek_Postepu__Wyswietlaj_CheckBox.Checked )
+  else
+    Dolny_Pasek_Postepu__Wyswietlaj_CheckBox.Checked := Plik_ini.ReadBool( 'Opcje', 'Dolny_Pasek_Postepu__Wyswietlaj', Dolny_Pasek_Postepu__Wyswietlaj_CheckBox.Checked ); // Jeżeli nie znajdzie to podstawia wartość Dolny_Pasek_Postepu__Wyswietlaj_CheckBox.Checked.
 
 
   Wymiar_Label.Visible := true;
@@ -2634,7 +2880,7 @@ begin
     if napisy_t[ i ] <> nil then
       begin
 
-        //napisy_t[ i ].Ustaw_Czcionke_Napisu();
+        //napisy_t[ i ].Ustaw_Czcionke_Napisu_N();
         Ustaw_Czcionke_Napisu( napisy_t[ i ] );
         //napisy_t[ i ].Color := Wymiar_Label.Color;
 
@@ -2656,11 +2902,11 @@ end;//---//Wczytaj_Ustawienia_ButtonClick().
 //Zapisz_Ustawienia_ButtonClick().
 procedure TKaraoke_Form.Zapisz_Ustawienia_ButtonClick( Sender: TObject );
 var
-  plik_ini : TIniFile;
+  plik_ini : IniFiles.TIniFile;
   zts : string;
 begin
 
-  plik_ini := TIniFile.Create(  ExtractFilePath( Application.ExeName ) + 'Karaoke.ini'  ); // Application potrzebuje w uses Forms.
+  plik_ini := IniFiles.TIniFile.Create(  ExtractFilePath( Application.ExeName ) + 'Karaoke.ini'  ); // Application potrzebuje w uses Forms.
 
 
   if PasLibVlcPlayer1.GetAudioVolume() >= 1 then // Jeżeli nie jest wczytany plik to ma wartość -1.
@@ -2690,7 +2936,8 @@ begin
   Plik_ini.WriteInteger( 'Opcje', 'Ukrywaj_Napisy_Wedlug', Ukrywaj_Napisy_Wedlug_RadioGroup.ItemIndex );
   Plik_ini.WriteBool( 'Opcje', 'Nie_Odswiezaj_Widoku', Nie_Odswiezaj_Widoku_CheckBox.Checked );
   Plik_ini.WriteBool( 'Opcje', 'Wyswietlaj_Informacje_O_Zdarzeniu', Wyswietlaj_Informacje_O_Zdarzeniu_CheckBox.Checked );
-  Plik_ini.WriteBool( 'Opcje', 'Dolny_Pasek_Postepu_Wyswietlaj', Dolny_Pasek_Postepu_Wyswietlaj_CheckBox.Checked );
+  Plik_ini.WriteBool( 'Opcje', 'Dolny_Pasek_Postepu__Ukrywaj', Dolny_Pasek_Postepu__Ukrywaj_CheckBox.Checked );
+  Plik_ini.WriteBool( 'Opcje', 'Dolny_Pasek_Postepu__Wyswietlaj', Dolny_Pasek_Postepu__Wyswietlaj_CheckBox.Checked );
 
   Plik_ini.WriteInteger( 'Opcje', 'Napisy_Rozmiar', Wymiar_Label.Font.Size );
   Plik_ini.WriteInteger( 'Opcje', 'Napisy_Kolor', Wymiar_Label.Font.Color );
@@ -2759,7 +3006,8 @@ begin
   Ukrywaj_Napisy_Wedlug_RadioGroup.ItemIndex := 0; // górnej krawędzi.
   Nie_Odswiezaj_Widoku_CheckBox.Checked := false;
   Wyswietlaj_Informacje_O_Zdarzeniu_CheckBox.Checked := true;
-  Dolny_Pasek_Postepu_Wyswietlaj_CheckBox.Checked := true;
+  Dolny_Pasek_Postepu__Wyswietlaj_CheckBox.Checked := true;
+  Dolny_Pasek_Postepu__Ukrywaj_CheckBox.Checked := true;
 
   Wymiar_Label.Visible := true;
 
@@ -2773,7 +3021,7 @@ begin
     if napisy_t[ i ] <> nil then
       begin
 
-        //napisy_t[ i ].Ustaw_Czcionke_Napisu();
+        //napisy_t[ i ].Ustaw_Czcionke_Napisu_N();
         Ustaw_Czcionke_Napisu( napisy_t[ i ] );
         //napisy_t[ i ].Color := Wymiar_Label.Color;
 
@@ -2804,7 +3052,7 @@ var
 begin
 
   // Enter.
-  if Key = 13 then
+  if Key = VK_RETURN then
     begin
 
       Key := 0;
@@ -2826,37 +3074,71 @@ begin
       //---//if napisy_t[ Test_Napisu_SpinEdit.Value ] = nil then
 
       Memo1.Lines.Add(  'Napis tekst: ' + napisy_t[ Test_Napisu_SpinEdit.Value ].Text );
-      Memo1.Lines.Add(    'Góra / wysokość odtwarzacza: ' + Trim(  FormatFloat( '### ### ##0', PasLibVlcPlayer1.Top )  ) + ' / ' + Trim(  FormatFloat( '### ### ##0', PasLibVlcPlayer1.Height )  )   );
-      Memo1.Lines.Add(   'Linie śpiewu (g, ś, d): ' + Trim(  FormatFloat( '### ### ##0', Linia_Spiewu_Gora_StaticText.Top )  ) + ', ' + Trim(  FormatFloat( '### ### ##0', Linia_Spiewu_Srodek_StaticText.Top )  ) + ', ' + Trim(  FormatFloat( '### ### ##0', Linia_Spiewu_Dol_StaticText.Top )  )   );
-      Memo1.Lines.Add(   'Napis od - do: ' + Trim(  FormatFloat( '### ### ##0', napisy_t[ Test_Napisu_SpinEdit.Value ].czas_od )  ) + ' - ' + Trim(  FormatFloat( '### ### ##0', napisy_t[ Test_Napisu_SpinEdit.Value ].czas_do )  )   );
-      Memo1.Lines.Add(   'Pozycja filmu: ' + Trim(  FormatFloat( '### ### ##0', PasLibVlcPlayer1.GetVideoPosInMs() )  )   );
+      Memo1.Lines.Add(    'Góra / wysokość odtwarzacza: ' + Trim(  FormatFloat( '### ### ### ### ##0', PasLibVlcPlayer1.Top )  ) + ' / ' + Trim(  FormatFloat( '### ### ### ### ##0', PasLibVlcPlayer1.Height )  )   );
+      Memo1.Lines.Add(   'Linie śpiewu (g, ś, d): ' + Trim(  FormatFloat( '### ### ### ##0', Linia_Spiewu_Gora_StaticText.Top )  ) + ', ' + Trim(  FormatFloat( '### ### ### ### ##0', Linia_Spiewu_Srodek_StaticText.Top )  ) + ', ' + Trim(  FormatFloat( '### ### ### ### ##0', Linia_Spiewu_Dol_StaticText.Top )  )   );
+      Memo1.Lines.Add(   'Napis od - do: ' + Trim(  FormatFloat( '### ### ### ### ##0', napisy_t[ Test_Napisu_SpinEdit.Value ].czas_od )  ) + ' - ' + Trim(  FormatFloat( '### ### ### ### ##0', napisy_t[ Test_Napisu_SpinEdit.Value ].czas_do )  )   );
+      Memo1.Lines.Add(   'Pozycja filmu: ' + Trim(  FormatFloat( '### ### ### ### ##0', PasLibVlcPlayer1.GetVideoPosInMs() )  )   );
 
       zti := Ustal_Pozycje( napisy_t[ Test_Napisu_SpinEdit.Value ], PasLibVlcPlayer1.GetVideoPosInMs(), true );
-      Memo1.Lines.Add(   'Pozycja napisu: ' + Trim(  FormatFloat( '### ### ##0', zti )  )   );
-      Memo1.Lines.Add(   'Różnica: ' + Trim(  FormatFloat( '### ### ##0', Linia_Spiewu_Dol_StaticText.Top - zti )  )   );
+      Memo1.Lines.Add(   'Pozycja napisu: ' + Trim(  FormatFloat( '### ### ### ### ##0', zti )  )   );
+      Memo1.Lines.Add(   'Różnica: ' + Trim(  FormatFloat( '### ### ### ### ##0', Linia_Spiewu_Dol_StaticText.Top - zti )  )   );
 
     end;
-  //---//if Key = 13 then
+  //---//if Key = VK_RETURN then
 
 end;//---//Test_Napisu_SpinEditKeyDown().
+
+//PasLibVlcPlayer1MouseDown().
+procedure TKaraoke_Form.PasLibVlcPlayer1MouseDown( Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer );
+begin
+
+  mysz__przycisk_nacisniety_g := true;
+  mysz__przycisk_nacisniety__x__start_g := X;
+  mysz__przycisk_nacisniety__y__start_g := Y;
+
+end;//---//PasLibVlcPlayer1MouseDown().
+
+//PasLibVlcPlayer1MouseUp().
+procedure TKaraoke_Form.PasLibVlcPlayer1MouseUp( Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer );
+begin
+
+  Mysz__Przycisk_Nacisniety__Procent_Wylicz( X, Y, true );
+
+  mysz__przycisk_nacisniety_g := false;
+  mysz__przycisk_nacisniety__x__start_g := 0;
+  mysz__przycisk_nacisniety__y__start_g := 0;
+
+end;//---//PasLibVlcPlayer1MouseUp().
 
 //Karaoke_MouseMove().
 procedure TKaraoke_Form.Karaoke_MouseMove( Sender: TObject; Shift: TShiftState; X, Y: Integer );
 begin
 
-  kursor_ruch := Now();
+  kursor_ruch_data_czas := Now();
 
   Screen.Cursor := crDefault;
 
-  //Caption := IntToStr( PasLibVlcPlayer1.Height ) + ' ' + IntToStr( y ); // Bardziej to.
-  //Caption := IntToStr( Karaoke_Form.Height ) + ' ' + IntToStr( y );
+  //Caption := IntToStr( PasLibVlcPlayer1.Height ) + ' ' + IntToStr( Y ); // Bardziej to.
+  //Caption := IntToStr( Karaoke_Form.Height ) + ' ' + IntToStr( Y );
 
-  if    ( Dolny_Pasek_Postepu_Wyswietlaj_CheckBox.Checked )
-    and ( not Przyciski_Panel.Visible )
-    and ( Y > PasLibVlcPlayer1.Height - 25 ) then
-    Czas_Dol_ProgressBar.Visible := true
-  else//if    ( Dolny_Pasek_Postepu_Wyswietlaj_CheckBox.Checked ) (...)
-    Czas_Dol_ProgressBar.Visible := false;
+
+  if mysz__przycisk_nacisniety_g then
+    Mysz__Przycisk_Nacisniety__Procent_Wylicz( X, Y );
+
+
+  if Dolny_Pasek_Postepu__Ukrywaj_CheckBox.Checked then
+    begin
+
+      if    ( Dolny_Pasek_Postepu__Wyswietlaj_CheckBox.Checked )
+        and ( not Przyciski_Panel.Visible )
+        and ( Y > PasLibVlcPlayer1.Height - 25 ) then
+        Czas_Dol_ProgressBar.Visible := true
+      else//if    ( Dolny_Pasek_Postepu__Wyswietlaj_CheckBox.Checked ) (...)
+        Czas_Dol_ProgressBar.Visible := false;
+
+    end
+  else//if Dolny_Pasek_Postepu__Ukrywaj_CheckBox.Checked then
+    Czas_Dol_ProgressBar.Visible := not Przyciski_Panel.Visible;
 
 end;//---//Karaoke_MouseMove().
 
@@ -2879,117 +3161,167 @@ var
   i : integer;
 begin
 
-  // Kursor dół, - (numeryczna).
-  if Key in [ 40, 109 ] then
-    begin
-
-      if Key = 40 then
-       i := 10
-      else//if Key = 40 then
-       i := 1;
-
-      Key := 0;
-
-      if i = 1 then
-        Ciszej_ButtonClick( nil )
-      else//if i = 1 then
-        Ciszej_ButtonClick( Sender );
-
-    end;
-  //---//if Key in [ 40, 109 ] then
-
-  // Kursor góra, + (numeryczna).
-  if Key in [ 38, 107 ] then
-    begin
-
-      if Key = 38 then
-       i := 10
-      else//if Key = 40 then
-       i := 1;
-
-      Key := 0;
-
-      if i = 1 then
-        Glosniej_ButtonClick( nil )
-      else//if i = 1 then
-        Glosniej_ButtonClick( Sender );
-
-    end;
-  //---//if Key in [ 38, 107 ] then
-
-  // Kursor lewo.
-  if Key = 37 then
+  // 1.
+  if Key = VK_1 then
     begin
 
       Key := 0;
 
-      if ssCtrl in Shift then
-        Skok_Do_Tylu_ButtonClick( nil )
-      else//if ssCtrl in Shift then
-        if ssShift in Shift then
-          Skok_Do_Tylu_ButtonClick( Skok_Sekundy_SpinEdit )
-        else//if ssShift in Shift then
-          Skok_Do_Tylu_ButtonClick( Sender );
+      Linia_Spiewu_Gora_CheckBox.Checked := not Linia_Spiewu_Gora_CheckBox.Checked;
+      Informacja_Tekst_Wyswietl( 'Widoczność linii śpiewu górnej', null );
 
-    end;
-  //---//if Key = 37 then
-
-  // Kursor prawo.
-  if Key = 39 then
+    end
+  else//if Key = VK_1 then
+  // 2.
+  if Key = VK_2 then
     begin
 
       Key := 0;
 
-      if ssCtrl in Shift then
-        Skok_Do_Przodu_ButtonClick( nil )
-      else//if ssCtrl in Shift then
-        if ssShift in Shift then
-          Skok_Do_Przodu_ButtonClick( Skok_Sekundy_SpinEdit )
-        else//if ssShift in Shift then
-          Skok_Do_Przodu_ButtonClick( Sender );
+      Linia_Spiewu_Srodek_CheckBox.Checked := not Linia_Spiewu_Srodek_CheckBox.Checked;
+      Informacja_Tekst_Wyswietl( 'Widoczność linii śpiewu środkowej', null );
 
-    end;
-  //---//if Key = 39 then
-
-  // >.
-  if Key = 190 then
-    begin
-
-      Key := 0;
-      Nastepna_Klatka_ButtonClick( Sender );
-
-    end;
-  //---//if Key = 190 then
-
-  // Spacja.
-  if Key = 32 then
+    end
+  else//if Key = VK_2 then
+  // 3.
+  if Key = VK_3 then
     begin
 
       Key := 0;
 
-      if PasLibVlcPlayer1.IsPause then
-        Wznow_ButtonClick( Sender )
-      else//if PasLibVlcPlayer1.IsPause then
-        Pauza_ButtonClick( Sender )
+      Linia_Spiewu_Dol_CheckBox.Checked := not Linia_Spiewu_Dol_CheckBox.Checked;
+      Informacja_Tekst_Wyswietl( 'Widoczność linii śpiewu dolnej', null );
 
-    end;
-  //---//if Key = 32 then
+    end
+  else//if Key = VK_3 then
+  // 1 (numeryczna).
+  if Key = VK_NUMPAD1 then
+    begin
 
+      Key := 0;
+
+      Linie_Spiewu_Odstep_SpinEdit.Value := Linie_Spiewu_Odstep_SpinEdit.Value + 1;
+
+      Informacja_Tekst_Wyswietl( 'Odstęp linii śpiewu', Linie_Spiewu_Odstep_SpinEdit.Value );
+
+    end
+  else//if Key = VK_NUMPAD1 then
+  // 2 (numeryczna).
+  if Key = VK_NUMPAD2 then
+    begin
+
+      Key := 0;
+
+      Linie_Spiewu_Wielkosc_SpinEdit.Value := Linie_Spiewu_Wielkosc_SpinEdit.Value - 1;
+
+      Informacja_Tekst_Wyswietl( 'Wielkość linii śpiewu', Linie_Spiewu_Wielkosc_SpinEdit.Value );
+
+    end
+  else//if Key = VK_NUMPAD2 then
+  // 3 (numeryczna).
+  if Key = VK_NUMPAD3 then
+    begin
+
+      Key := 0;
+
+      Skok_Sekundy_SpinEdit.Value := Skok_Sekundy_SpinEdit.Value - 1;
+
+      Informacja_Tekst_Wyswietl( 'Skok o ilość sekund', Skok_Sekundy_SpinEdit.Value );
+
+    end
+  else//if Key = VK_NUMPAD3 then
+  // 7 (numeryczna).
+  if Key = VK_NUMPAD7 then
+    begin
+
+      Key := 0;
+
+      Linie_Spiewu_Odstep_SpinEdit.Value := Linie_Spiewu_Odstep_SpinEdit.Value - 1;
+
+      Informacja_Tekst_Wyswietl( 'Odstęp linii śpiewu', Linie_Spiewu_Odstep_SpinEdit.Value );
+
+    end
+  else//if Key = VK_NUMPAD7 then
+  // 8 (numeryczna).
+  if Key = VK_NUMPAD8 then
+    begin
+
+      Key := 0;
+
+      Linie_Spiewu_Wielkosc_SpinEdit.Value := Linie_Spiewu_Wielkosc_SpinEdit.Value + 1;
+
+      Informacja_Tekst_Wyswietl( 'Wielkość linii śpiewu', Linie_Spiewu_Wielkosc_SpinEdit.Value );
+
+    end
+  else//if Key = VK_NUMPAD8 then
+  // 9 (numeryczna).
+  if Key = VK_NUMPAD9 then
+    begin
+
+      Key := 0;
+
+      Skok_Sekundy_SpinEdit.Value := Skok_Sekundy_SpinEdit.Value + 1;
+
+      Informacja_Tekst_Wyswietl( 'Skok o ilość sekund', Skok_Sekundy_SpinEdit.Value );
+
+    end
+  else//if Key = VK_NUMPAD9 then
+  // , (numeryczna).
+  if Key = VK_DECIMAL then
+    begin
+
+      Key := 0;
+
+      if Karaoke_Form.WindowState <> wsMinimized then
+        begin
+
+          Application.Minimize();
+          Informacja_Tekst_Wyswietl( 'Minimalizuj ekran', null );
+
+        end;
+      //---//if Karaoke_Form.WindowState <> wsMinimized then
+
+    end
+  else//if Key = VK_DECIMAL then
   // Backspace.
-  if    ( Key = 8 )
+  if    ( Key = VK_BACK )
     and ( ssCtrl in Shift ) then
     begin
 
       Key := 0;
+
       Zegar_Czestotliwosc_SpinEdit.Value := 100;
 
       Informacja_Tekst_Wyswietl( 'Częstotliwość zegara', Zegar_Czestotliwosc_SpinEdit.Value );
 
-    end;
-  //---//if    ( Key = 8 ) (...)
+    end
+  else//if    ( Key = VK_BACK ) (...)
+  // End.
+  if Key = VK_END then
+    begin
 
+      Key := 0;
+
+      Screen.Cursor := crHourGlass;
+
+      Wymiar_Label.Visible := true;
+
+      Wymiar_Label.Font.Size := Wymiar_Label.Font.Size - 1;
+
+      for i := 0 to Length( napisy_t ) - 1 do // Gdy pusta = 0; z jednym elementem = 1.
+        if napisy_t[ i ] <> nil then
+            Ustaw_Czcionke_Napisu( napisy_t[ i ] );
+
+      Wymiar_Label.Visible := false;
+
+      Screen.Cursor := crDefault;
+
+      Informacja_Tekst_Wyswietl( 'Rozmiar czcionki napisów', Wymiar_Label.Font.Size );
+
+    end
+  else//if Key = VK_END then
   // Enter.
-  if Key = 13 then
+  if Key = VK_RETURN then
     begin
 
       Key := 0;
@@ -3027,45 +3359,65 @@ begin
           end;
         //---//if ssShift in Shift then
 
-    end;
-  //---//if Key = 13 then
-
+    end
+  else//if Key = VK_RETURN then
   // Escape.
-  if Key = 27 then
+  if Key = VK_ESCAPE then
     begin
 
       Key := 0;
 
-      //Pelny_Ekran_ButtonClick( nil ) //???
-
-      if Karaoke_Form.BorderStyle <> bsSizeable then
-        Karaoke_Form.BorderStyle := bsSizeable;
-
-      if Karaoke_Form.WindowState <> wsNormal then
+      if mysz__przycisk_nacisniety_g then
         begin
 
-          Przyciski_Panel.Visible := true;
-          Karaoke_Form.WindowState := wsNormal;
+          mysz__przycisk_nacisniety_g := false;
+          mysz__przycisk_nacisniety__x__start_g := 0;
+          mysz__przycisk_nacisniety__y__start_g := 0;
 
-          Karaoke_Form.Top := okno_gora;
-          Karaoke_Form.Left := okno_lewo;
-          Karaoke_Form.Height := okno_wysokosc;
-          Karaoke_Form.Width := okno_szerokosc;
+        end
+      else//if mysz__przycisk_nacisniety_g then
+        begin
 
-          Przerysuj_Zaslone();
+          //Pelny_Ekran_ButtonClick( nil ) //???
 
-          Informacja_Tekst_Wyswietl( 'Normalny ekran', null );
+          if Karaoke_Form.BorderStyle <> bsSizeable then
+            Karaoke_Form.BorderStyle := bsSizeable;
+
+          if Karaoke_Form.WindowState <> wsNormal then
+            begin
+
+              Przyciski_Panel.Visible := true;
+              Karaoke_Form.WindowState := wsNormal;
+
+              Karaoke_Form.Top := okno_gora;
+              Karaoke_Form.Left := okno_lewo;
+              Karaoke_Form.Height := okno_wysokosc;
+              Karaoke_Form.Width := okno_szerokosc;
+
+              Przerysuj_Zaslone();
+
+              Informacja_Tekst_Wyswietl( 'Normalny ekran', null );
+
+            end;
+          //---//if Karaoke_Form.WindowState <> wsNormal then
 
         end;
-      //---//if Karaoke_Form.WindowState <> wsNormal then
+      //---//if mysz__przycisk_nacisniety_g then
 
-    end;
-  //---//if Key = 27 then
+    end
+  else//if Key = VK_ESCAPE then
+  // F.
+  if Key = VK_F then
+    begin
 
+      Key := 0;
 
+      Pelny_Ekran_ButtonClick( Sender );
 
+    end
+  else//if Key = VK_F then
   // Home.
-  if Key = 36 then
+  if Key = VK_HOME then
     begin
 
       Key := 0;
@@ -3086,144 +3438,78 @@ begin
 
       Informacja_Tekst_Wyswietl( 'Rozmiar czcionki napisów', Wymiar_Label.Font.Size );
 
-    end;
-  //---//if Key = 36 then
-
-  // End.
-  if Key = 35 then
+    end
+  else//if Key = VK_HOME then
+  // Kursor dół, - (numeryczna).
+  if Key in [ VK_DOWN, VK_SUBTRACT ] then
     begin
+
+      if Key = VK_DOWN then
+        i := 10
+      else//if Key = VK_DOWN then
+        i := 1;
 
       Key := 0;
 
-      Screen.Cursor := crHourGlass;
+      if i = 1 then
+        Ciszej_ButtonClick( nil )
+      else//if i = 1 then
+        Ciszej_ButtonClick( Sender );
 
-      Wymiar_Label.Visible := true;
-
-      Wymiar_Label.Font.Size := Wymiar_Label.Font.Size - 1;
-
-      for i := 0 to Length( napisy_t ) - 1 do // Gdy pusta = 0; z jednym elementem = 1.
-        if napisy_t[ i ] <> nil then
-            Ustaw_Czcionke_Napisu( napisy_t[ i ] );
-
-      Wymiar_Label.Visible := false;
-
-      Screen.Cursor := crDefault;
-
-      Informacja_Tekst_Wyswietl( 'Rozmiar czcionki napisów', Wymiar_Label.Font.Size );
-
-    end;
-  //---//if Key = 35 then
-
-
-
-  // Page Up.
-  if Key = 33 then
+    end
+  else//if Key in [ VK_DOWN, VK_SUBTRACT ] then
+  // Kursor góra, + (numeryczna).
+  if Key in [ VK_UP, VK_ADD ] then
     begin
 
-      Key := 0;
-      Pozycja_Obszaru_Spiewu_SpinEdit.Value := Pozycja_Obszaru_Spiewu_SpinEdit.Value + 1;
-
-      Informacja_Tekst_Wyswietl( 'Pozycja obszaru śpiewu', Pozycja_Obszaru_Spiewu_SpinEdit.Value );
-
-    end;
-  //---//if Key = 33 then
-
-
-  // Page Down.
-  if Key = 34 then
-    begin
+      if Key = VK_UP then
+        i := 10
+      else//if Key = VK_UP then
+        i := 1;
 
       Key := 0;
-      Pozycja_Obszaru_Spiewu_SpinEdit.Value := Pozycja_Obszaru_Spiewu_SpinEdit.Value - 1;
 
-      Informacja_Tekst_Wyswietl( 'Pozycja obszaru śpiewu', Pozycja_Obszaru_Spiewu_SpinEdit.Value );
+      if i = 1 then
+        Glosniej_ButtonClick( nil )
+      else//if i = 1 then
+        Glosniej_ButtonClick( Sender );
 
-    end;
-  //---//if Key = 34 then
-
-
-
-  // [.
-  if Key = 219 then
+    end
+  else//if Key in [ VK_UP, VK_ADD ] then
+  // Kursor lewo.
+  if Key = VK_LEFT then
     begin
 
       Key := 0;
 
       if ssCtrl in Shift then
-        Przesuniecie_Napisow_SpinEdit.Value := Przesuniecie_Napisow_SpinEdit.Value + 500
+        Skok_Do_Tylu_ButtonClick( nil )
       else//if ssCtrl in Shift then
-        Przesuniecie_Napisow_SpinEdit.Value := Przesuniecie_Napisow_SpinEdit.Value + 100;
+        if ssShift in Shift then
+          Skok_Do_Tylu_ButtonClick( Skok_Sekundy_SpinEdit )
+        else//if ssShift in Shift then
+          Skok_Do_Tylu_ButtonClick( Sender );
 
-      Informacja_Tekst_Wyswietl( 'Przesunięcie napisów', Przesuniecie_Napisow_SpinEdit.Value );
-
-    end;
-  //---//if Key = 219 then
-
-
-  // ].
-  if Key = 221 then
+    end
+  else//if Key = VK_LEFT then
+  // Kursor prawo.
+  if Key = VK_RIGHT then
     begin
 
       Key := 0;
 
       if ssCtrl in Shift then
-        Przesuniecie_Napisow_SpinEdit.Value := Przesuniecie_Napisow_SpinEdit.Value - 500
+        Skok_Do_Przodu_ButtonClick( nil )
       else//if ssCtrl in Shift then
-        Przesuniecie_Napisow_SpinEdit.Value := Przesuniecie_Napisow_SpinEdit.Value - 100;
+        if ssShift in Shift then
+          Skok_Do_Przodu_ButtonClick( Skok_Sekundy_SpinEdit )
+        else//if ssShift in Shift then
+          Skok_Do_Przodu_ButtonClick( Sender );
 
-      Informacja_Tekst_Wyswietl( 'Przesunięcie napisów', Przesuniecie_Napisow_SpinEdit.Value );
-
-    end;
-  //---//if Key = 221 then
-
-  // '.
-  if Key = 222 then
-    begin
-
-      Key := 0;
-      Przesuniecie_Napisow_SpinEdit.Value := 0;
-
-      Informacja_Tekst_Wyswietl( 'Przesunięcie napisów', Przesuniecie_Napisow_SpinEdit.Value );
-
-    end;
-  //---//if Key = 221 then
-
-
-
-  // -.
-  if    ( Key = 189 )
-    and ( ssCtrl in Shift ) then
-    begin
-
-      Key := 0;
-
-      Zegar_Czestotliwosc_SpinEdit.Value := Zegar_Czestotliwosc_SpinEdit.Value - 10;
-
-      if Zegar_Czestotliwosc_SpinEdit.Value <= 0 then
-        Zegar_Czestotliwosc_SpinEdit.Value := 1;
-
-      Informacja_Tekst_Wyswietl( 'Częstotliwość zegara', Zegar_Czestotliwosc_SpinEdit.Value );
-
-    end;
-  //---//if    ( Key = 189 ) (...)
-
-  // +.
-  if    ( Key = 187 )
-    and ( ssCtrl in Shift ) then
-    begin
-
-      Key := 0;
-
-      Zegar_Czestotliwosc_SpinEdit.Value := Zegar_Czestotliwosc_SpinEdit.Value + 10;
-
-      Informacja_Tekst_Wyswietl( 'Częstotliwość zegara', Zegar_Czestotliwosc_SpinEdit.Value );
-
-    end;
-  //---//if    ( Key = 187 ) (...)
-
-
+    end
+  else//if Key = VK_RIGHT then
   // L.
-  if Key = 76 then
+  if Key = VK_L then
     begin
 
       Key := 0;
@@ -3272,11 +3558,10 @@ begin
 
       Informacja_Tekst_Wyswietl( 'Widoczność linii śpiewu', null );
 
-    end;
-  //---//if Key = 76 then
-
+    end
+  else//if Key = VK_L then
   // N.
-  if Key = 78 then
+  if Key = VK_N then
     begin
 
       Key := 0;
@@ -3286,11 +3571,10 @@ begin
       else//if ssCtrl in Shift then
         Wczytaj_Napisy_ButtonClick( Sender );
 
-    end;
-  //---//if Key = 78 then
-
+    end
+  else//if Key = VK_N then
   // O.
-  if Key = 79 then
+  if Key = VK_O then
     begin
 
       Key := 0;
@@ -3300,21 +3584,44 @@ begin
       else//if ssCtrl in Shift then
         Opcje_ButtonClick( Sender );
 
-    end;
-  //---//if Key = 79 then
-
+    end
+  else//if Key = VK_O then
   // P.
-  if Key = 80 then
+  if Key = VK_P then
     begin
 
       Key := 0;
+
       Otworz_Plik_ButtonClick( Sender );
 
-    end;
-  //---//if Key = 80 then
+    end
+  else//if Key = VK_P then
+  // Page Up.
+  if Key = VK_PRIOR then
+    begin
 
+      Key := 0;
+
+      Pozycja_Obszaru_Spiewu_SpinEdit.Value := Pozycja_Obszaru_Spiewu_SpinEdit.Value + 1;
+
+      Informacja_Tekst_Wyswietl( 'Pozycja obszaru śpiewu', Pozycja_Obszaru_Spiewu_SpinEdit.Value );
+
+    end
+  else//if Key = VK_PRIOR then
+  // Page Down.
+  if Key = VK_NEXT then
+    begin
+
+      Key := 0;
+
+      Pozycja_Obszaru_Spiewu_SpinEdit.Value := Pozycja_Obszaru_Spiewu_SpinEdit.Value - 1;
+
+      Informacja_Tekst_Wyswietl( 'Pozycja obszaru śpiewu', Pozycja_Obszaru_Spiewu_SpinEdit.Value );
+
+    end
+  else//if Key = VK_NEXT then
   // R.
-  if Key = 82 then
+  if Key = VK_R then
     begin
 
       Key := 0;
@@ -3327,34 +3634,46 @@ begin
 
       PasLibVlcPlayer1.SetVideoSubtitleById( -1 ); // Wyłączy standardowe wyświetlanie napisów w odtwarzaczu.
 
-    end;
-  //---//if Key = 82 then
-
+    end
+  else//if Key = VK_R then
   // S.
-  if Key = 83 then
+  if Key = VK_S then
     begin
 
       Key := 0;
+
       Stop_ButtonClick( Sender );
 
-    end;
-  //---//if Key = 83 then
-
-  // T.
-  if Key = 84 then
+    end
+  else//if Key = VK_S then
+  // Spacja.
+  if Key = VK_SPACE then
     begin
 
-      Key := 13;
+      Key := 0;
+
+      if PasLibVlcPlayer1.IsPause then
+        Wznow_ButtonClick( Sender )
+      else//if PasLibVlcPlayer1.IsPause then
+        Pauza_ButtonClick( Sender )
+
+    end
+  else//if Key = VK_SPACE then
+  // T.
+  if Key = VK_T then
+    begin
+
+      Key := VK_RETURN;
       Test_Napisu_SpinEditKeyDown( Sender, Key, [] );
+
       Key := 0;
 
       Informacja_Tekst_Wyswietl( 'Test napisu', null );
 
-    end;
-  //---//if Key = 84 then
-
+    end
+  else//if Key = VK_T then
   // U.
-  if Key = 85 then
+  if Key = VK_U then
     begin
 
       Key := 0;
@@ -3386,161 +3705,132 @@ begin
       else//if ssCtrl in Shift then
         Ukryj_Przyciski_Panel_ButtonClick( Sender );
 
-    end;
-  //---//if Key = 85 then
-
+    end
+  else//if Key = VK_U then
   // W.
-  if Key = 87 then
+  if Key = VK_W then
     begin
 
       Key := 0;
+
       Wycisz_ButtonClick( Sender );
 
-    end;
-  //---//if Key = 87 then
-
+    end
+  else//if Key = VK_W then
   // X.
-  if Key = 88 then
+  if Key = VK_X then
     begin
 
       Key := 0;
+
       Wyczysc_Napisy_ButtonClick( Sender );
 
-    end;
-  //---//if Key = 88 then
-
-
-
-  // 1.
-  if Key = 49 then
-    begin
-
-      Key := 0;
-      Linia_Spiewu_Gora_CheckBox.Checked := not Linia_Spiewu_Gora_CheckBox.Checked;
-      Informacja_Tekst_Wyswietl( 'Widoczność linii śpiewu górnej', null );
-
-    end;
-  //---//if Key = 49 then
-  // 2.
-  if Key = 50 then
-    begin
-
-      Key := 0;
-      Linia_Spiewu_Srodek_CheckBox.Checked := not Linia_Spiewu_Srodek_CheckBox.Checked;
-      Informacja_Tekst_Wyswietl( 'Widoczność linii śpiewu środkowej', null );
-
-    end;
-  //---//if Key = 50 then
-  // 3.
-  if Key = 51 then
-    begin
-
-      Key := 0;
-      Linia_Spiewu_Dol_CheckBox.Checked := not Linia_Spiewu_Dol_CheckBox.Checked;
-      Informacja_Tekst_Wyswietl( 'Widoczność linii śpiewu dolnej', null );
-
-    end;
-  //---//if Key = 51 then
-
-
-
-  // 1 (numeryczna).
-  if Key = 97 then
-    begin
-
-      Key := 0;
-      Linie_Spiewu_Odstep_SpinEdit.Value := Linie_Spiewu_Odstep_SpinEdit.Value + 1;
-
-      Informacja_Tekst_Wyswietl( 'Odstęp linii śpiewu', Linie_Spiewu_Odstep_SpinEdit.Value );
-
-    end;
-  //---//if Key = 33 then
-
-
-  // 7 (numeryczna).
-  if Key = 103 then
-    begin
-
-      Key := 0;
-      Linie_Spiewu_Odstep_SpinEdit.Value := Linie_Spiewu_Odstep_SpinEdit.Value - 1;
-
-      Informacja_Tekst_Wyswietl( 'Odstęp linii śpiewu', Linie_Spiewu_Odstep_SpinEdit.Value );
-
-    end;
-  //---//if Key = 103 then
-
-
-
-  // 8 (numeryczna).
-  if Key = 104 then
-    begin
-
-      Key := 0;
-      Linie_Spiewu_Wielkosc_SpinEdit.Value := Linie_Spiewu_Wielkosc_SpinEdit.Value + 1;
-
-      Informacja_Tekst_Wyswietl( 'Wielkość linii śpiewu', Linie_Spiewu_Wielkosc_SpinEdit.Value );
-
-    end;
-  //---//if Key = 104 then
-
-
-  // 2 (numeryczna).
-  if Key = 98 then
-    begin
-
-      Key := 0;
-      Linie_Spiewu_Wielkosc_SpinEdit.Value := Linie_Spiewu_Wielkosc_SpinEdit.Value - 1;
-
-      Informacja_Tekst_Wyswietl( 'Wielkość linii śpiewu', Linie_Spiewu_Wielkosc_SpinEdit.Value );
-
-    end;
-  //---//if Key = 98 then
-
-
-
-  // 9 (numeryczna).
-  if Key = 105 then
-    begin
-
-      Key := 0;
-      Skok_Sekundy_SpinEdit.Value := Skok_Sekundy_SpinEdit.Value + 1;
-
-      Informacja_Tekst_Wyswietl( 'Skok o ilość sekund', Skok_Sekundy_SpinEdit.Value );
-
-    end;
-  //---//if Key = 105 then
-
-
-  // 3 (numeryczna).
-  if Key = 99 then
-    begin
-
-      Key := 0;
-      Skok_Sekundy_SpinEdit.Value := Skok_Sekundy_SpinEdit.Value - 1;
-
-      Informacja_Tekst_Wyswietl( 'Skok o ilość sekund', Skok_Sekundy_SpinEdit.Value );
-
-    end;
-  //---//if Key = 9 then
-
-  // , (numeryczna).
-  if Key = 110 then
+    end
+  else//if Key = VK_X then
+  // -.
+  if    ( Key = VK_OEM_MINUS )
+    and ( ssCtrl in Shift ) then
     begin
 
       Key := 0;
 
-      if Karaoke_Form.WindowState <> wsMinimized then
-        begin
+      Zegar_Czestotliwosc_SpinEdit.Value := Zegar_Czestotliwosc_SpinEdit.Value - 10;
 
-          Application.Minimize();
-          Informacja_Tekst_Wyswietl( 'Minimalizuj ekran', null );
+      if Zegar_Czestotliwosc_SpinEdit.Value <= 0 then
+        Zegar_Czestotliwosc_SpinEdit.Value := 1;
 
-        end;
-      //---//if Karaoke_Form.WindowState <> wsMinimized then
+      Informacja_Tekst_Wyswietl( 'Częstotliwość zegara', Zegar_Czestotliwosc_SpinEdit.Value );
+
+    end
+  else//if    ( Key = VK_OEM_MINUS ) (...)
+  // +.
+  if    ( Key = VK_OEM_PLUS )
+    and ( ssCtrl in Shift ) then
+    begin
+
+      Key := 0;
+
+      Zegar_Czestotliwosc_SpinEdit.Value := Zegar_Czestotliwosc_SpinEdit.Value + 10;
+
+      Informacja_Tekst_Wyswietl( 'Częstotliwość zegara', Zegar_Czestotliwosc_SpinEdit.Value );
+
+    end
+  else//if    ( Key = VK_OEM_PLUS ) (...)
+  // >.
+  if Key = VK_OEM_PERIOD then
+    begin
+
+      Key := 0;
+
+      Nastepna_Klatka_ButtonClick( Sender );
+
+    end
+  else//if Key = VK_OEM_PERIOD then
+  // [.
+  if Key = VK_OEM_4 then
+    begin
+
+      Key := 0;
+
+      if ssCtrl in Shift then
+        Przesuniecie_Napisow_SpinEdit.Value := Przesuniecie_Napisow_SpinEdit.Value + 500
+      else//if ssCtrl in Shift then
+        Przesuniecie_Napisow_SpinEdit.Value := Przesuniecie_Napisow_SpinEdit.Value + 100;
+
+      Informacja_Tekst_Wyswietl( 'Przesunięcie napisów', Przesuniecie_Napisow_SpinEdit.Value );
+
+    end
+  else//if Key = VK_OEM_4 then
+  // ].
+  if Key = VK_OEM_6 then
+    begin
+
+      Key := 0;
+
+      if ssCtrl in Shift then
+        Przesuniecie_Napisow_SpinEdit.Value := Przesuniecie_Napisow_SpinEdit.Value - 500
+      else//if ssCtrl in Shift then
+        Przesuniecie_Napisow_SpinEdit.Value := Przesuniecie_Napisow_SpinEdit.Value - 100;
+
+      Informacja_Tekst_Wyswietl( 'Przesunięcie napisów', Przesuniecie_Napisow_SpinEdit.Value );
+
+    end
+  else//if Key = VK_OEM_6 then
+  // '.
+  if Key = VK_OEM_7 then
+    begin
+
+      Key := 0;
+
+      Przesuniecie_Napisow_SpinEdit.Value := 0;
+
+      Informacja_Tekst_Wyswietl( 'Przesunięcie napisów', Przesuniecie_Napisow_SpinEdit.Value );
 
     end;
-  //---//if Key = 9 then
+  //---//if Key = VK_OEM_7 then
 
 end;//---//Karaoke_KeyDown().
+
+//LinkLabelLinkClick().
+procedure TKaraoke_Form.LinkLabelLinkClick( Sender: TObject );
+var
+  zts : string;
+begin
+
+  if    ( Sender <> nil )
+    and ( Sender is TLabel ) then
+    begin
+
+      if Pos( 'E_Mail', TLabel(Sender).Name ) > 0 then
+        zts := 'mailto:'
+      else//if Pos( 'E_Mail', TLabel(Sender).Name ) > 0 then
+        zts := '';
+
+
+      ShellExecute( 0, 'Open', PChar(zts + TLabel(Sender).Caption), nil, nil, SW_SHOWDEFAULT );
+
+    end;
+
+end;//---//LinkLabelLinkClick().
 
 end.

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="11"/>
+    <Version Value="12"/>
     <PathDelim Value="\"/>
     <General>
+      <Flags>
+        <CompatibilityMode Value="True"/>
+      </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <MainUnit Value="0"/>
       <Title Value="Karaoke_pr"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
@@ -18,10 +20,38 @@
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
       <Language Value="0415"/>
-      <StringTable Comments="j.mulawka@interia.pl https://github.com/jacek-mulawka" CompanyName="Jacek Mulawka" FileDescription="Odtwarzacz multimedialny oparty na 'VideoLAN (www.videolan.org)' wyświetlający napisy do karaoke w formie przesuwającego się tekstu. MIT License." LegalCopyright="Copyright (c) 2017 Jacek Mulawka" OriginalFilename="Karaoke z Eris Kallisti Dyskordia" ProductName="Karaoke z Eris Kallisti Dyskordia" ProductVersion="2021.05.03"/>
+      <StringTable Comments="j.mulawka@interia.pl https://github.com/jacek-mulawka" CompanyName="Jacek Mulawka" FileDescription="Odtwarzacz multimedialny oparty na &apos;VideoLAN (www.videolan.org)&apos; wyświetlający napisy do karaoke w formie przesuwającego się tekstu. MIT License." LegalCopyright="Copyright (c) 2017 Jacek Mulawka" OriginalFilename="Karaoke z Eris Kallisti Dyskordia" ProductName="Karaoke z Eris Kallisti Dyskordia" ProductVersion="2024.02.28"/>
     </VersionInfo>
-    <BuildModes Count="1">
+    <BuildModes Count="2">
       <Item1 Name="Default" Default="True"/>
+      <Item2 Name="Win32">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="Karaoke_pr"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <CodeGeneration>
+            <TargetCPU Value="i386"/>
+            <TargetOS Value="win32"/>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <GenerateDebugInfo Value="False"/>
+              <DebugInfoType Value="dsDwarf3"/>
+            </Debugging>
+            <Options>
+              <Win32>
+                <GraphicApplication Value="True"/>
+              </Win32>
+            </Options>
+          </Linking>
+        </CompilerOptions>
+      </Item2>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -71,6 +101,7 @@
     <Linking>
       <Debugging>
         <GenerateDebugInfo Value="False"/>
+        <DebugInfoType Value="dsDwarf3"/>
       </Debugging>
       <Options>
         <Win32>

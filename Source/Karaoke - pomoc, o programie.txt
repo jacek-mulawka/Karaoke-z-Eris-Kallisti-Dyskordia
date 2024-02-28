@@ -29,6 +29,7 @@ G³oœnoœæ
   G³oœniej [kursor góra, + (klawiatura numeryczna)].
   Ciszej [kursor dó³, - (klawiatura numeryczna)].
   Wycisz [W].
+  LPM (na ekranie) trzymaj i poruszaj góra dó³.
 
 Odtwarzanie:
   Otwórz plik, play [P].
@@ -39,6 +40,7 @@ Odtwarzanie:
   Skocz do ty³u [kursor lewo, 10x : Ctrl + kursor lewo, 0.1x : Shift + kursor lewo]
   Skocz do przodu [kursor prawo, 10x : Ctrl + kursor prawo, 0.1x : Shift + kursor prawo].
   Skocz 1 klatkê do przodu [>].
+  LPM (na ekranie) trzymaj i poruszaj lewo prawo.
 
 Pliki:
   Plik multimediów (wska¿ plik) [Ctrl + O].
@@ -50,7 +52,7 @@ Widocznoœæ:
   Opcje [O].
   Pe³ny ekran [Enter, Ctrl + U].
   Normalny ekran [Esc, Ctrl + U].
-  Pe³ny ekran (tryb niestabilny) [Ctrl + Enter].
+  Pe³ny ekran (tryb niestabilny) [F, Ctrl + Enter].
   Normalny ekran (tryb niestabilny) [Shift + Enter, Ctrl + Enter].
   Minimalizuj okno [, (numeryczna)].
   Odstêp linii œpiewu [7 (numeryczna) - zmniejsz, 1 (numeryczna) - zwiêksz].

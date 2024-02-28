@@ -15,7 +15,6 @@ uses
 begin
 
   RequireDerivedFormResource := True;
-  Application.Title := 'Karaoke z Eris Kallisti Dyskordia';
   Application.Initialize();
   Application.CreateForm( TKaraoke_Form, Karaoke_Form );
   Application.Run();
