@@ -1,6 +1,6 @@
 # Karaoke-z-Eris-Kallisti-Dyskordia
 
-Odtwarzacz multimedialny wyświetlający napisy do karaoke w formie przesuwającego się tekstu.
+Odtwarzacz multimedialny wyświetlający napisy do karaoke w formie przesuwającego się tekstu. Program zawiera tłumaczenia na kilka wersji językowych.
 
 Program został stworzony w Lazarus z użyciem komponentów projektu [VideoLAN](http://www.videolan.org).
 Aby program mógł działać należy zainstalować [VLC media player](http://www.videolan.org).
@@ -8,7 +8,7 @@ Aby program mógł działać należy zainstalować [VLC media player](http://www
 
 ## English
 
-A media player created in Lazarus that displays karaoke subtitles in the form of moving text. 
+A media player created in Lazarus that displays karaoke subtitles in the form of moving text. The program includes translations into several language versions.
 
 The program uses [VideoLAN](http://www.videolan.org).
 To run the program you need to install [VLC media player](http://www.videolan.org).
