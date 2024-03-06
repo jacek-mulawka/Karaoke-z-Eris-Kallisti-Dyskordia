@@ -1,12 +1,12 @@
 object Karaoke_Form: TKaraoke_Form
-  Left = 847
-  Height = 390
-  Top = 267
-  Width = 634
+  Left = 1113
+  Height = 400
+  Top = 347
+  Width = 750
   AllowDropFiles = True
   Caption = 'Karaoke z Eris Kallisti Dyskordia'
-  ClientHeight = 390
-  ClientWidth = 634
+  ClientHeight = 400
+  ClientWidth = 750
   OnClick = Karaoke_Click
   OnClose = FormClose
   OnCreate = FormCreate
@@ -22,10 +22,10 @@ object Karaoke_Form: TKaraoke_Form
     Left = 0
     Height = 125
     Top = 0
-    Width = 634
+    Width = 750
     Align = alTop
     ClientHeight = 125
-    ClientWidth = 634
+    ClientWidth = 750
     TabOrder = 0
     OnMouseMove = Karaoke_MouseMove
     OnMouseWheel = Karaoke_MouseWheel
@@ -51,7 +51,7 @@ object Karaoke_Form: TKaraoke_Form
       Caption = 'Wznów'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 5
+      TabOrder = 7
       OnClick = Wznow_ButtonClick
       OnMouseWheel = Karaoke_MouseWheel
     end
@@ -64,7 +64,7 @@ object Karaoke_Form: TKaraoke_Form
       Caption = 'Pauza'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 6
+      TabOrder = 9
       OnClick = Pauza_ButtonClick
       OnMouseWheel = Karaoke_MouseWheel
     end
@@ -77,20 +77,20 @@ object Karaoke_Form: TKaraoke_Form
       Caption = 'Stop'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 7
+      TabOrder = 11
       OnClick = Stop_ButtonClick
       OnMouseWheel = Karaoke_MouseWheel
     end
     object Pelny_Ekran_Button: TButton
       Left = 335
-      Height = 25
-      Hint = 'Pełny ekran (tryb niestabilny) [Ctrl + Enter].'#13#10'Normalny ekran (tryb niestabilny) [Shift + Enter, Ctrl + Enter].'
+      Height = 50
+      Hint = 'Pełny ekran [F, Ctrl + Enter]'#13#10'Normalny ekran [Esc, F, Ctrl + Enter, Shift + Enter, Ctrl + U]'#13#10'Maksymalizuj okno [Enter, Ctrl + U]'#13#10'Minimalizuj okno [, (numeryczna)]'
       Top = 55
-      Width = 75
+      Width = 100
       Caption = 'Pełny ekran'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 8
+      TabOrder = 13
       OnClick = Pelny_Ekran_ButtonClick
       OnMouseWheel = Karaoke_MouseWheel
     end
@@ -108,72 +108,72 @@ object Karaoke_Form: TKaraoke_Form
       OnMouseWheel = Karaoke_MouseWheel
     end
     object Glosniej_Button: TButton
-      Left = 600
+      Left = 716
       Height = 25
-      Hint = 'Głośniej [kursor góra, + (numeryczna)].'
+      Hint = 'Głośniej [Strzałka w górę, + (numeryczna)].'
       Top = 55
       Width = 30
       Anchors = [akTop, akRight]
       Caption = '+'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 11
+      TabOrder = 16
       OnClick = Glosniej_ButtonClick
       OnMouseWheel = Karaoke_MouseWheel
     end
     object Ciszej_Button: TButton
-      Left = 570
+      Left = 686
       Height = 25
-      Hint = 'Ciszej [kursor dół, - (numeryczna)].'
+      Hint = 'Ciszej [Strzałka w dół, - (numeryczna)].'
       Top = 55
       Width = 30
       Anchors = [akTop, akRight]
       Caption = '-'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 10
+      TabOrder = 15
       OnClick = Ciszej_ButtonClick
       OnMouseWheel = Karaoke_MouseWheel
     end
-    object Skok_Do_Tylu_Button: TButton
+    object Skok_Do__Tylu_Button: TButton
       Left = 90
       Height = 25
-      Hint = 'Skocz do tyłu [kursor lewo, 10x : Ctrl + kursor lewo, 0.1x : Shift + kursor lewo].'
+      Hint = 'Skocz do tyłu [Strzałka w lewo, 10x : Ctrl + Strzałka w lewo, 0.1x : Shift + Strzałka w lewo].'
       Top = 80
       Width = 75
       Caption = '-<'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 12
-      OnClick = Skok_Do_Tylu_ButtonClick
+      TabOrder = 8
+      OnClick = Skok_Do__Tylu_ButtonClick
       OnMouseWheel = Karaoke_MouseWheel
     end
-    object Skok_Do_Przodu_Button: TButton
+    object Skok_Do__Przodu_Button: TButton
       Left = 165
       Height = 25
-      Hint = 'Skocz do przodu [kursor prawo, 10x : Ctrl + kursor prawo, 0.1x : Shift + kursor prawo].'
+      Hint = 'Skocz do przodu [Strzałka w prawo, 10x : Ctrl + Strzałka w prawo, 0.1x : Shift + Strzałka w prawo].'
       Top = 80
       Width = 75
       Caption = '>+'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 13
-      OnClick = Skok_Do_Przodu_ButtonClick
+      TabOrder = 10
+      OnClick = Skok_Do__Przodu_ButtonClick
       OnMouseWheel = Karaoke_MouseWheel
     end
     object Czas_ProgressBar: TProgressBar
       Left = 1
       Height = 20
       Top = 104
-      Width = 632
+      Width = 748
       Align = alBottom
       OnMouseDown = Czas_ProgressBarMouseDown
       OnMouseMove = Czas_ProgressBarMouseMove
       Step = 1
-      TabOrder = 16
+      TabOrder = 18
     end
     object Czas_Label: TLabel
-      Left = 347
+      Left = 465
       Height = 15
       Top = 90
       Width = 155
@@ -186,7 +186,7 @@ object Karaoke_Form: TKaraoke_Form
       ParentFont = False
     end
     object Glosnosc_ProgressBar: TProgressBar
-      Left = 550
+      Left = 666
       Height = 20
       Hint = 'Pasek głośności.'
       Top = 85
@@ -197,25 +197,25 @@ object Karaoke_Form: TKaraoke_Form
       OnMouseMove = Glosnosc_ProgressBarMouseMove
       OnMouseWheel = Karaoke_MouseWheel
       ParentShowHint = False
-      Position = 100
+      Position = 40
       ShowHint = True
-      TabOrder = 15
+      TabOrder = 17
     end
     object Glosnosc_Label: TLabel
-      Left = 520
+      Left = 641
       Height = 15
       Hint = 'Poziom głośności.'
       Top = 90
-      Width = 18
+      Width = 12
       Anchors = [akTop, akRight]
-      Caption = '100'
+      Caption = '40'
       ParentColor = False
       ParentShowHint = False
       ShowHint = True
       OnMouseWheel = Karaoke_MouseWheel
     end
     object Wycisz_Button: TButton
-      Left = 495
+      Left = 611
       Height = 25
       Hint = 'Wycisz [W].'
       Top = 55
@@ -225,7 +225,7 @@ object Karaoke_Form: TKaraoke_Form
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 9
+      TabOrder = 14
       OnClick = Wycisz_ButtonClick
       OnMouseWheel = Karaoke_MouseWheel
     end
@@ -238,7 +238,7 @@ object Karaoke_Form: TKaraoke_Form
       Caption = 'k+'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 14
+      TabOrder = 12
       OnClick = Nastepna_Klatka_ButtonClick
       OnMouseWheel = Karaoke_MouseWheel
     end
@@ -260,7 +260,7 @@ object Karaoke_Form: TKaraoke_Form
       Height = 23
       Hint = 'Plik multimediów (wskaż plik) [Ctrl + O].'
       Top = 0
-      Width = 538
+      Width = 654
       Anchors = [akTop, akLeft, akRight]
       ButtonCaption = '...'
       ButtonHint = 'Wskaż plik multimediów [Ctrl + O].'
@@ -279,7 +279,7 @@ object Karaoke_Form: TKaraoke_Form
       Height = 23
       Hint = 'Plik napisów (wskaż plik) [Ctrl + N].'
       Top = 25
-      Width = 538
+      Width = 654
       Anchors = [akTop, akLeft, akRight]
       ButtonCaption = '...'
       ButtonHint = 'Wskaż plik napisów [Ctrl + N].'
@@ -302,7 +302,7 @@ object Karaoke_Form: TKaraoke_Form
       Caption = '_'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 17
+      TabOrder = 5
       OnClick = Ukryj_Przyciski_Panel_ButtonClick
       OnMouseWheel = Karaoke_MouseWheel
     end
@@ -315,12 +315,12 @@ object Karaoke_Form: TKaraoke_Form
       Caption = 'O'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 18
+      TabOrder = 6
       OnClick = Opcje_ButtonClick
       OnMouseWheel = Karaoke_MouseWheel
     end
     object Czas_Ms_Label: TLabel
-      Left = 463
+      Left = 579
       Height = 15
       Hint = 'Postęp / czas utworu w milisekundach.'
       Top = 67
@@ -356,53 +356,38 @@ object Karaoke_Form: TKaraoke_Form
     MouseEventsHandler = mehComponent
   end
   object PageControl1: TPageControl
-    Left = 384
-    Height = 255
-    Hint = 'Skok o ilość sekund [9 (numeryczna) - zwiększ, 3 (numeryczna) - zmniejsz].'
+    Left = 500
+    Height = 265
     Top = 125
     Width = 250
-    ActivePage = Opcje_TabSheet
+    ActivePage = O_Programie_TabSheet
     Align = alRight
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 2
     OnMouseMove = Karaoke_MouseMove
     object Opcje_TabSheet: TTabSheet
       Caption = 'Opcje'
-      ClientHeight = 227
+      ClientHeight = 237
       ClientWidth = 242
       object Opcje_ScrollBox: TScrollBox
         Left = 0
-        Height = 227
+        Height = 237
         Top = 0
         Width = 242
         HorzScrollBar.Page = 221
-        VertScrollBar.Page = 206
+        VertScrollBar.Page = 216
         Align = alClient
-        ClientHeight = 206
+        ClientHeight = 216
         ClientWidth = 221
         TabOrder = 0
         OnMouseMove = Karaoke_MouseMove
-        object Linia_Spiewu_Gora_CheckBox: TCheckBox
+        object Linia_Spiewu__Gora_CheckBox: TCheckBox
           Left = 5
           Height = 19
           Hint = '[L, 1].'
-          Top = 1
+          Top = 55
           Width = 181
           Caption = 'Widoczność linii śpiewu górnej'
-          Checked = True
-          ParentShowHint = False
-          ShowHint = True
-          State = cbChecked
-          TabOrder = 0
-          OnClick = Linie_CheckBoxClick
-        end
-        object Linia_Spiewu_Srodek_CheckBox: TCheckBox
-          Left = 5
-          Height = 19
-          Hint = '[L, 2].'
-          Top = 15
-          Width = 201
-          Caption = 'Widoczność linii śpiewu środkowej'
           Checked = True
           ParentShowHint = False
           ShowHint = True
@@ -410,37 +395,49 @@ object Karaoke_Form: TKaraoke_Form
           TabOrder = 1
           OnClick = Linie_CheckBoxClick
         end
-        object Linia_Spiewu_Dol_CheckBox: TCheckBox
+        object Linia_Spiewu__Srodek_CheckBox: TCheckBox
+          Left = 5
+          Height = 19
+          Hint = '[L, 2].'
+          Top = 75
+          Width = 201
+          Caption = 'Widoczność linii śpiewu środkowej'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 2
+          OnClick = Linie_CheckBoxClick
+        end
+        object Linia_Spiewu__Dol_CheckBox: TCheckBox
           Left = 5
           Height = 19
           Hint = '[L, 3].'
-          Top = 31
+          Top = 95
           Width = 180
           Caption = 'Widoczność linii śpiewu dolnej'
           Checked = True
           ParentShowHint = False
           ShowHint = True
           State = cbChecked
-          TabOrder = 2
+          TabOrder = 3
           OnClick = Linie_CheckBoxClick
         end
         object Pozycja_Obszaru_Spiewu_SpinEdit: TSpinEdit
           Left = 120
           Height = 23
-          Hint = 'Pozycja obszaru śpiewu w procentach [page up - podwyższ, page down - obniż].'
-          Top = 122
+          Hint = 'Pozycja obszaru śpiewu w procentach'#13#10'[Page Up - podwyższ]'#13#10'[Page Down - obniż]'
+          Top = 200
           Width = 70
           MinValue = -100
           OnChange = PasLibVlcPlayer1Resize
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 5
+          TabOrder = 6
         end
         object Pozycja_Obszaru_Spiewu_Etykieta_Label: TLabel
           Left = 5
           Height = 33
-          Hint = 'Pozycja obszaru śpiewu w procentach [page up - podwyższ, page down - obniż].'
-          Top = 122
+          Hint = 'Pozycja obszaru śpiewu w procentach'#13#10'[Page Up - podwyższ]'#13#10'[Page Down - obniż]'
+          Top = 200
           Width = 100
           AutoSize = False
           Caption = 'Pozycja obszaru śpiewu [%]'
@@ -452,31 +449,31 @@ object Karaoke_Form: TKaraoke_Form
         object Zegar_Czestotliwosc_SpinEdit: TSpinEdit
           Left = 120
           Height = 23
-          Hint = 'Częstotliwość zegara [Ctrl + + - zwiększ, Ctrl + - - zmniejsz, Ctrl + backspace - domyślna].'
-          Top = 155
+          Hint = 'Częstotliwość zegara'#13#10'[Ctrl + + - zwiększ]'#13#10'[Ctrl + - - zmniejsz]'#13#10'[Ctrl + Backspace - domyślna]'
+          Top = 235
           Width = 70
           MaxValue = 99999999
           OnChange = Zegar_Czestotliwosc_SpinEditChange
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 6
+          TabOrder = 7
           Value = 25
         end
         object Zegar_Czestotliwosc_Etykieta_Label: TLabel
           Left = 5
           Height = 15
-          Hint = 'Częstotliwość zegara [Ctrl + + - zwiększ, Ctrl + - - zmniejsz, Ctrl + backspace - domyślna].'
-          Top = 160
+          Hint = 'Częstotliwość zegara'#13#10'[Ctrl + + - zwiększ]'#13#10'[Ctrl + - - zmniejsz]'#13#10'[Ctrl + Backspace - domyślna]'
+          Top = 240
           Width = 109
           Caption = 'Częstotliwość zegara'
           ParentColor = False
           ParentShowHint = False
           ShowHint = True
         end
-        object Wyswietlaj_Napisy_Wedlug_RadioGroup: TRadioGroup
+        object Napisy__Wyswietlaj_Wedlug_RadioGroup: TRadioGroup
           Left = 0
           Height = 65
-          Top = 180
+          Top = 265
           Width = 190
           AutoFill = True
           Caption = 'Wyświetlaj napisy według'
@@ -496,27 +493,27 @@ object Karaoke_Form: TKaraoke_Form
             'filmu'
             'czasu narastająco'
           )
-          OnClick = Wyswietlaj_Napisy_Wedlug_RadioGroupClick
-          TabOrder = 7
+          OnClick = Napisy__Wyswietlaj_Wedlug_RadioGroupClick
+          TabOrder = 8
         end
         object Skok_Sekundy_SpinEdit: TSpinEdit
           Left = 120
           Height = 23
-          Hint = 'Skok o ilość sekund [9 (numeryczna) - zwiększ, 3 (numeryczna) - zmniejsz].'
-          Top = 255
+          Hint = 'Skok o ilość sekund'#13#10'[9 (numeryczna) - zwiększ]'#13#10'[3 (numeryczna) - zmniejsz]'
+          Top = 335
           Width = 70
           MaxValue = 99999999
           MinValue = 1
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 8
+          TabOrder = 9
           Value = 3
         end
         object Skok_Sekundy_Etykieta_Label: TLabel
           Left = 5
           Height = 15
-          Hint = 'Skok o ilość sekund [9 (numeryczna) - zwiększ, 3 (numeryczna) - zmniejsz].'
-          Top = 260
+          Hint = 'Skok o ilość sekund'#13#10'[9 (numeryczna) - zwiększ]'#13#10'[3 (numeryczna) - zmniejsz]'
+          Top = 340
           Width = 103
           Caption = 'Skok o ilość sekund'
           ParentColor = False
@@ -526,99 +523,93 @@ object Karaoke_Form: TKaraoke_Form
         object Czcionka_Napisow_Button: TButton
           Left = 5
           Height = 24
-          Hint = 'Ustaw czcionkę napisów [Home - zwiększ rozmiar, End - zmniejsz rozmiar].'
-          Top = 628
-          Width = 124
+          Hint = 'Ustaw czcionkę napisów'#13#10'[Home - zwiększ rozmiar]'#13#10'[End - zmniejsz rozmiar]'
+          Top = 685
+          Width = 180
           Caption = 'Czcionka napisów'
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 19
+          TabOrder = 20
           OnClick = Czcionka_Napisow_ButtonClick
         end
         object Tlo_Napisow_Button: TButton
           Left = 5
           Height = 24
           Hint = 'Ustaw tło napisów.'
-          Top = 656
-          Width = 124
+          Top = 715
+          Width = 180
           Caption = 'Tło napisów'
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 20
+          TabOrder = 21
           OnClick = Tlo_Napisow_ButtonClick
         end
-        object Kolor_Linii_Spiewu_Gornej_Button: TButton
+        object Linia_Spiewu__Gora__Kolor_Button: TButton
           Left = 5
           Height = 24
-          Top = 713
-          Width = 160
+          Top = 755
+          Width = 210
           Caption = 'Kolor linii śpiewu górnej'
           ParentShowHint = False
-          TabOrder = 21
-          OnClick = Kolor_Linii_Spiewu_ButtonClick
+          TabOrder = 22
+          OnClick = Linia_Spiewu__KolorButtonClick
         end
-        object Kolor_Linii_Spiewu_Srodkowej_Button: TButton
+        object Linia_Spiewu__Srodek__Kolor_Button: TButton
           Left = 5
           Height = 24
-          Top = 741
-          Width = 160
+          Top = 785
+          Width = 210
           Caption = 'Kolor linii śpiewu środkowej'
           ParentShowHint = False
-          TabOrder = 22
-          OnClick = Kolor_Linii_Spiewu_ButtonClick
+          TabOrder = 23
+          OnClick = Linia_Spiewu__KolorButtonClick
         end
-        object Kolor_Linii_Spiewu_Dolnej_Button: TButton
+        object Linia_Spiewu__Dol__Kolor_Button: TButton
           Left = 5
           Height = 24
-          Top = 771
-          Width = 160
+          Top = 815
+          Width = 210
           Caption = 'Kolor linii śpiewu dolnej'
           ParentShowHint = False
-          TabOrder = 23
-          OnClick = Kolor_Linii_Spiewu_ButtonClick
+          TabOrder = 24
+          OnClick = Linia_Spiewu__KolorButtonClick
         end
-        object Wczytaj_Ustawienia_Button: TButton
+        object Ustawienia__Wczytaj_Button: TButton
           Left = 5
           Height = 24
-          Hint = 'Ustaw tło napisów.'
-          Top = 826
-          Width = 124
+          Top = 855
+          Width = 160
           Caption = 'Wczytaj ustawienia'
           ParentFont = False
           ParentShowHint = False
-          ShowHint = True
-          TabOrder = 24
-          OnClick = Wczytaj_Ustawienia_ButtonClick
+          TabOrder = 25
+          OnClick = Ustawienia__Wczytaj_ButtonClick
         end
-        object Zapisz_Ustawienia_Button: TButton
+        object Ustawienia__Zapisz_Button: TButton
           Left = 30
           Height = 24
-          Hint = 'Ustaw tło napisów.'
-          Top = 855
-          Width = 124
+          Top = 885
+          Width = 160
           Caption = 'Zapisz ustawienia'
           ParentShowHint = False
-          ShowHint = True
-          TabOrder = 25
-          OnClick = Zapisz_Ustawienia_ButtonClick
+          TabOrder = 26
+          OnClick = Ustawienia__Zapisz_ButtonClick
         end
-        object Domyslne_Ustawienia_Button: TButton
+        object Ustawienia__Domyslne_Button: TButton
           Left = 5
           Height = 24
-          Hint = 'Ustaw tło napisów.'
-          Top = 883
-          Width = 124
+          Top = 915
+          Width = 160
           Caption = 'Domyślne ustawienia'
           ParentShowHint = False
-          ShowHint = True
-          TabOrder = 26
-          OnClick = Domyslne_Ustawienia_ButtonClick
+          TabOrder = 27
+          OnClick = Ustawienia__Domyslne_ButtonClick
         end
         object Przesuniecie_Napisow_Etykieta_Label: TLabel
           Left = 5
           Height = 30
-          Hint = 'Przesunięcie napisów [100 ms : [ - opóźnij, ] - przyśpiesz, 500 ms : Ctrl + [ - opóźnij, Ctrl + ] - przyśpiesz, '' - wyzeruj].'
-          Top = 290
+          Hint = 'Przesunięcie napisów'#13#10'[[ - opóźnij 100 ms]'#13#10'[] - przyśpiesz 100 ms]'#13#10'[Ctrl + [ - opóźnij 500 ms]'#13#10'[Ctrl + ] - przyśpiesz 500 ms]'#13#10'['' - wyzeruj]'
+          Top = 365
           Width = 100
           AutoSize = False
           Caption = 'Przesunięcie napisów [ms]'
@@ -630,33 +621,33 @@ object Karaoke_Form: TKaraoke_Form
         object Przesuniecie_Napisow_SpinEdit: TSpinEdit
           Left = 120
           Height = 23
-          Hint = 'Przesunięcie napisów [100 ms : [ - opóźnij, ] - przyśpiesz, 500 ms : Ctrl + [ - opóźnij, Ctrl + ] - przyśpiesz, '' - wyzeruj].'
-          Top = 290
+          Hint = 'Przesunięcie napisów'#13#10'[[ - opóźnij 100 ms]'#13#10'[] - przyśpiesz 100 ms]'#13#10'[Ctrl + [ - opóźnij 500 ms]'#13#10'[Ctrl + ] - przyśpiesz 500 ms]'#13#10'['' - wyzeruj]'
+          Top = 365
           Width = 70
           MaxValue = 99999999
           MinValue = -99999999
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 9
+          TabOrder = 10
         end
-        object Linie_Spiewu_Odstep_SpinEdit: TSpinEdit
+        object Linie_Spiewu__Odstep_SpinEdit: TSpinEdit
           Left = 120
           Height = 23
-          Hint = 'Odstęp linii śpiewu [7 (numeryczna) - zmniejsz, 1 (numeryczna) - zwiększ].'
-          Top = 55
+          Hint = 'Odstęp linii śpiewu'#13#10'[7 (numeryczna) - zwiększ]'#13#10'[1 (numeryczna) - zmniejsz]'
+          Top = 120
           Width = 70
           MinValue = 1
           OnChange = PasLibVlcPlayer1Resize
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 3
+          TabOrder = 4
           Value = 6
         end
-        object Linie_Spiewu_Odstep_Etykieta_Label: TLabel
+        object Linie_Spiewu__Odstep_Etykieta_Label: TLabel
           Left = 7
           Height = 33
-          Hint = 'Odstęp linii śpiewu [7 (numeryczna) - zmniejsz, 1 (numeryczna) - zwiększ].'
-          Top = 55
+          Hint = 'Odstęp linii śpiewu'#13#10'[7 (numeryczna) - zwiększ]'#13#10'[1 (numeryczna) - zmniejsz]'
+          Top = 120
           Width = 100
           AutoSize = False
           Caption = 'Odstęp linii śpiewu [%]'
@@ -665,11 +656,11 @@ object Karaoke_Form: TKaraoke_Form
           ShowHint = True
           WordWrap = True
         end
-        object Linie_Spiewu_Wielkosc_Etykieta_Label: TLabel
+        object Linie_Spiewu__Wielkosc_Etykieta_Label: TLabel
           Left = 5
           Height = 33
-          Hint = 'Wielkość linii śpiewu [8 (numeryczna) - zwiększ, 2 (numeryczna) - zmniejsz].'
-          Top = 88
+          Hint = 'Wielkość linii śpiewu'#13#10'[8 (numeryczna) - zwiększ]'#13#10'[2 (numeryczna) - zmniejsz]'
+          Top = 160
           Width = 100
           AutoSize = False
           Caption = 'Wielkość linii śpiewu'
@@ -678,33 +669,33 @@ object Karaoke_Form: TKaraoke_Form
           ShowHint = True
           WordWrap = True
         end
-        object Linie_Spiewu_Wielkosc_SpinEdit: TSpinEdit
+        object Linie_Spiewu__Wielkosc_SpinEdit: TSpinEdit
           Left = 120
           Height = 23
-          Hint = 'Wielkość linii śpiewu [8 (numeryczna) - zwiększ, 2 (numeryczna) - zmniejsz].'
-          Top = 88
+          Hint = 'Wielkość linii śpiewu'#13#10'[8 (numeryczna) - zwiększ]'#13#10'[2 (numeryczna) - zmniejsz]'
+          Top = 160
           Width = 70
           MinValue = 1
           OnChange = PasLibVlcPlayer1Resize
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 4
+          TabOrder = 5
           Value = 10
         end
         object Jedno_Uruchomienie_Programu_CheckBox: TCheckBox
           Left = 9
           Height = 19
-          Top = 935
+          Top = 960
           Width = 182
           Caption = 'Jedno uruchomienie programu'
           Checked = True
           State = cbChecked
-          TabOrder = 27
+          TabOrder = 28
         end
-        object Korekta_Czasu_Narastajaco_Etykieta_Label: TLabel
+        object Korekta_Czasu__Narastajaco_Etykieta_Label: TLabel
           Left = 5
           Height = 30
-          Top = 494
+          Top = 550
           Width = 100
           AutoSize = False
           Caption = 'Korekta czasu narastająco [ms]'
@@ -712,46 +703,46 @@ object Karaoke_Form: TKaraoke_Form
           ParentShowHint = False
           WordWrap = True
         end
-        object Korekta_Czasu_Narastajaco_SpinEdit: TSpinEdit
+        object Korekta_Czasu__Narastajaco_SpinEdit: TSpinEdit
           Left = 120
           Height = 23
-          Top = 494
+          Top = 550
           Width = 70
           MaxValue = 99999999
           MinValue = -99999999
           ParentShowHint = False
-          TabOrder = 15
+          TabOrder = 16
           Value = 1
         end
-        object Korekta_Czasu_Narastajaco_Prezentuj_Roznice_CheckBox: TCheckBox
+        object Korekta_Czasu__Narastajaco__Prezentuj_Roznice_CheckBox: TCheckBox
           Left = 5
           Height = 19
           Hint = 'Prezentuj różnicę czasu narastająco względem czasu utworu (w setnych częściach sekundy - cs).'
-          Top = 529
+          Top = 585
           Width = 39
           Caption = '<?>'
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 16
+          TabOrder = 17
         end
-        object Korekta_Czasu_Narastajaco_Automatyczna_CheckBox: TCheckBox
+        object Korekta_Czasu__Narastajaco__Automatyczna_CheckBox: TCheckBox
           Left = 5
           Height = 19
           Hint = 'Automatyczne dostosowywanie korekty czasu narastająco.'
-          Top = 549
+          Top = 610
           Width = 232
           Caption = 'Automatyczna korekta czasu narastająco'
           Checked = True
           ParentShowHint = False
           ShowHint = True
           State = cbChecked
-          TabOrder = 17
+          TabOrder = 18
         end
-        object Korekta_Czasu_Narastajaco_Prog_Etykieta_Label: TLabel
+        object Korekta_Czasu__Narastajaco__Prog_Etykieta_Label: TLabel
           Left = 6
           Height = 30
           Hint = 'Po jakim bezwzględnym odchyleniu w milisekundach ma zadziałać automatyczna korekta.'
-          Top = 574
+          Top = 640
           Width = 100
           AutoSize = False
           Caption = 'Próg korekty czasu narastająco [ms]'
@@ -760,61 +751,61 @@ object Karaoke_Form: TKaraoke_Form
           ShowHint = True
           WordWrap = True
         end
-        object Korekta_Czasu_Narastajaco_Prog_SpinEdit: TSpinEdit
+        object Korekta_Czasu__Narastajaco__Prog_SpinEdit: TSpinEdit
           Left = 120
           Height = 23
           Hint = 'Po jakim bezwzględnym odchyleniu w milisekundach ma zadziałać automatyczna korekta.'
-          Top = 574
+          Top = 640
           Width = 70
           MaxValue = 1000
           MinValue = 1
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 18
+          TabOrder = 19
           Value = 100
         end
         object Nie_Odswiezaj_Widoku_CheckBox: TCheckBox
           Left = 5
           Height = 19
           Hint = 'Nie przerysowuje automatycznie okna (tylko gdy wymuszone [R]).'
-          Top = 385
+          Top = 455
           Width = 132
           Caption = 'Nie odświeżaj widoku'
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 11
+          TabOrder = 12
         end
         object Dolny_Pasek_Postepu__Wyswietlaj_CheckBox: TCheckBox
           Left = 5
           Height = 19
           Hint = 'Wyświetlaj dolny pasek postępu (po umieszczeniu kursora myszy w dolnej części okna) gdy górny panel jest niewidoczny.'
-          Top = 430
+          Top = 500
           Width = 186
           Caption = 'Wyświetlaj dolny pasek postępu'
           Checked = True
           ParentShowHint = False
           ShowHint = True
           State = cbChecked
-          TabOrder = 13
+          TabOrder = 14
         end
-        object Wyswietlaj_Informacje_O_Zdarzeniu_CheckBox: TCheckBox
+        object Informacje_O_Zdarzeniu_Wyswietlaj_CheckBox: TCheckBox
           Left = 5
           Height = 19
           Hint = 'Wyświetlaj na ekranie informację o zdarzeniu (np. naciśnięcie przycisku).'
-          Top = 408
+          Top = 480
           Width = 197
           Caption = 'Wyświetlaj informację o zdarzeniu'
           Checked = True
           ParentShowHint = False
           ShowHint = True
           State = cbChecked
-          TabOrder = 12
+          TabOrder = 13
         end
-        object Ukrywaj_Napisy_Wedlug_RadioGroup: TRadioGroup
+        object Napisy__Ukrywaj_Wedlug_RadioGroup: TRadioGroup
           Left = 5
           Height = 40
           Hint = 'Ukrywaj napisy gdy górna krawędź napisu dojdzie do krawędzi ekranu lub gdy dolna krawędź opuści obszar śpiewu.'
-          Top = 330
+          Top = 405
           Width = 190
           AutoFill = True
           Caption = 'Ukrywaj napisy według krawędzi'
@@ -835,26 +826,45 @@ object Karaoke_Form: TKaraoke_Form
           )
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 10
+          TabOrder = 11
         end
         object Dolny_Pasek_Postepu__Ukrywaj_CheckBox: TCheckBox
           Left = 5
           Height = 19
           Hint = 'Automatycznie ukrywaj dolny pasek postępu (gdy kursor myszy nie znajduje się w dolnej części okna).'
-          Top = 450
+          Top = 520
           Width = 172
           Caption = 'Ukrywaj dolny pasek postępu'
-          Checked = True
           ParentShowHint = False
           ShowHint = True
-          State = cbChecked
-          TabOrder = 14
+          TabOrder = 15
+        end
+        object Tlumaczenia_ComboBox: TComboBox
+          Left = 5
+          Height = 21
+          Hint = '[Enter] - zastosuj'#13#10'[Ctrl + R] - wczytaj'
+          Top = 25
+          Width = 200
+          DropDownCount = 40
+          ItemHeight = 15
+          ParentShowHint = False
+          ShowHint = True
+          Style = csOwnerDrawFixed
+          TabOrder = 0
+          OnKeyDown = Tlumaczenia_ComboBoxKeyDown
+        end
+        object Tlumaczenia_Etykieta_Label: TLabel
+          Left = 5
+          Height = 15
+          Top = 5
+          Width = 66
+          Caption = 'Tłumaczenie'
         end
       end
     end
     object O_Programie_TabSheet: TTabSheet
       Caption = 'O programie'
-      ClientHeight = 227
+      ClientHeight = 237
       ClientWidth = 242
       OnMouseMove = Karaoke_MouseMove
       object O_Programie__1_Label: TLabel
@@ -863,7 +873,7 @@ object Karaoke_Form: TKaraoke_Form
         Top = 0
         Width = 242
         Align = alTop
-        Caption = 'Karaoke z Eris Kallisti Dyskordia'#13#10'wersja: 2024.02.28.'#13#10#13#10'MIT License'#13#10#13#10'Copyright (c) 2017 Jacek Mulawka'
+        Caption = 'Karaoke z Eris Kallisti Dyskordia'#13#10'wersja: 2024.03.06.'#13#10#13#10'MIT License'#13#10#13#10'Copyright (c) 2017 Jacek Mulawka'
         ParentColor = False
         WordWrap = True
       end
@@ -1148,14 +1158,14 @@ object Karaoke_Form: TKaraoke_Form
       end
       object O_Programie_ScrollBox: TScrollBox
         Left = 0
-        Height = 47
+        Height = 57
         Top = 180
         Width = 242
         HorzScrollBar.Page = 221
-        VertScrollBar.Page = 26
+        VertScrollBar.Page = 36
         Align = alClient
         BorderSpacing.Top = 20
-        ClientHeight = 26
+        ClientHeight = 36
         ClientWidth = 221
         TabOrder = 0
         object O_Programie__2_Label: TLabel
@@ -1219,60 +1229,95 @@ object Karaoke_Form: TKaraoke_Form
     end
     object Pomoc_TabSheet: TTabSheet
       Caption = 'Pomoc'
-      ClientHeight = 227
+      ClientHeight = 237
       ClientWidth = 242
       object Pomoc_Memo: TMemo
         Left = 0
-        Height = 227
+        Height = 237
         Top = 0
         Width = 242
         Align = alClient
         Lines.Strings = (
+          'O programie:'
+          ''
+          'Karaoke z Eris Kallisti Dyskordia'
+          ''
+          ''
+          'MIT License'
+          ''
+          'Copyright (c) 2017 Jacek Mulawka'
+          ''
+          'j.mulawka@interia.pl'
+          ''
+          'https://github.com/jacek-mulawka'
+          ''
+          ''
+          'Program jest darmowy, udostępniony w postaci takiej jakiej jest wraz ze wszystkimi błędami. Użytkownik zyskuje dostęp do programu, używa programu na własne ryzyko i ponosi wyłączną odpowiedzialność za wszelkie szkody (własne i niewłasne) materialne i niematerialne oraz utratę danych w związku z używaniem programu.'
+          ''
+          'Program został stworzony z użyciem komponentów projektu VideoLAN (http://www.videolan.org).'
+          'Aby program mógł działać należy zainstalować ''VLC media player'' dostępny na stronie: http://www.videolan.org/'
+          ''
+          'W projekcie wykorzystano PasLibVlc (https://prog.olsztyn.pl/paslibvlc/).'
+          ''
+          ''
+          ''
+          ''
+          'Pomoc:'
+          ''
+          ''
           'Skróty klawiszowe:'
           ''
-          'Głośność'
-          '  Głośniej [kursor góra, + (klawiatura numeryczna)].'
-          '  Ciszej [kursor dół, - (klawiatura numeryczna)].'
-          '  Wycisz [W].'
+          'Głośność:'
+          '  Głośniej [kursor góra, + (klawiatura numeryczna)]'
+          '  Ciszej [kursor dół, - (klawiatura numeryczna)]'
+          '  Wycisz [W]'
+          '  LPM (na ekranie) trzymaj i poruszaj góra dół'
           ''
           'Odtwarzanie:'
-          '  Otwórz plik, play [P].'
-          '  Wznów / Pauza [Spacja].'
-          '  Stop [S].'
-          '  Wczytaj napisy [N].'
+          '  Otwórz plik, play [P]'
+          '  Wznów / Pauza [Spacja]'
+          '  Stop [S]'
+          '  Wczytaj napisy [N]'
           ''
           '  Skocz do tyłu [kursor lewo, 10x : Ctrl + kursor lewo, 0.1x : Shift + kursor lewo]'
-          '  Skocz do przodu [kursor prawo, 10x : Ctrl + kursor prawo, 0.1x : Shift + kursor prawo].'
-          '  Skocz 1 klatkę do przodu [>].'
+          '  Skocz do przodu [kursor prawo, 10x : Ctrl + kursor prawo, 0.1x : Shift + kursor prawo]'
+          '  Skocz 1 klatkę do przodu [>]'
+          '  LPM (na ekranie) trzymaj i poruszaj lewo prawo'
           ''
           'Pliki:'
-          '  Plik multimediów (wskaż plik) [Ctrl + O].'
-          '  Plik napisów (wskaż plik) [Ctrl + N].'
-          '  Wyczyść napisy [X].'
+          '  Plik multimediów (wskaż plik) [Ctrl + O]'
+          '  Plik napisów (wskaż plik) [Ctrl + N]'
+          '  Wyczyść napisy [X]'
           ''
           'Widoczność:'
-          '  Ukryj panel przycisków [U].'
-          '  Opcje [O].'
-          '  Pełny ekran [Enter, Ctrl + U].'
-          '  Normalny ekran [Esc, Ctrl + U].'
-          '  Pełny ekran (tryb niestabilny) [Ctrl + Enter].'
-          '  Normalny ekran (tryb niestabilny) [Shift + Enter, Ctrl + Enter].'
-          '  Minimalizuj okno [, (numeryczna)].'
-          '  Odstęp linii śpiewu [7 (numeryczna) - zmniejsz, 1 (numeryczna) - zwiększ].'
-          '  Widoczność linii śpiewu [L].'
-          '  Widoczność linii śpiewu górnej [1].'
-          '  Widoczność linii śpiewu środkowej [2].'
-          '  Widoczność linii śpiewu dolnej [3].'
-          '  Odśwież widok [R].'
+          '  Ukryj panel przycisków [U]'
+          '  Opcje [O]'
+          '  Pełny ekran [F, Ctrl + Enter]'
+          '  Normalny ekran [Esc, F, Ctrl + Enter, Shift + Enter, Ctrl + U]'
+          '  Maksymalizuj okno [Enter, Ctrl + U]'
+          '  Minimalizuj okno [, (numeryczna)]'
+          '  Odstęp linii śpiewu [7 (numeryczna) - zwiększ, 1 (numeryczna) - zmniejsz]'
+          '  Widoczność linii śpiewu [L]'
+          '  Widoczność linii śpiewu górnej [1]'
+          '  Widoczność linii śpiewu środkowej [2]'
+          '  Widoczność linii śpiewu dolnej [3]'
+          '  Odśwież widok [R]'
           ''
           'Napisy:'
-          '  Pozycja obszaru śpiewu [Page Up - podwyższ, Page Down - obniż].'
-          '  Wielkość linii śpiewu [8 (numeryczna) - zwiększ, 2 (numeryczna) - zmniejsz].'
-          '  Rozmiar czcionki napisów [Home - zwiększ rozmiar, End - zmniejsz rozmiar].'
-          '  Częstotliwość zegara [Ctrl + + - zwiększ, Ctrl + - - zmniejsz, Ctrl + Backspace - domyślna].'
-          '  Przesunięcie napisów [100 ms : [ - opóźnij, ] - przyśpiesz, 500 ms : Ctrl + [ - opóźnij, Ctrl + ] - przyśpiesz, '' - wyzeruj].'
-          '  Skok o ilość sekund [9 (numeryczna) - zwiększ, 3 (numeryczna) - zmniejsz].'
-          '  Test - informacja o parametrach napisu [T].'
+          '  Pozycja obszaru śpiewu [Page Up - podwyższ, Page Down - obniż]'
+          '  Wielkość linii śpiewu [8 (numeryczna) - zwiększ, 2 (numeryczna) - zmniejsz]'
+          '  Rozmiar czcionki napisów [Home - zwiększ rozmiar, End - zmniejsz rozmiar]'
+          '  Częstotliwość zegara [Ctrl + + - zwiększ, Ctrl + - - zmniejsz, Ctrl + Backspace - domyślna]'
+          '  Przesunięcie napisów [[ - opóźnij 100 ms, ] - przyśpiesz 100 ms, Ctrl + [ - opóźnij 500 ms, Ctrl + ] - przyśpiesz 500 ms, '' - wyzeruj]'
+          '  Skok o ilość sekund [9 (numeryczna) - zwiększ, 3 (numeryczna) - zmniejsz]'
+          '  Test - informacja o parametrach napisu [T]'
+          ''
+          ''
+          ''
+          ''
+          'O tłumaczeniach:'
+          ''
+          'Pliki z tłumaczeniami można umieszczać w katalogu ''Tłumaczenia''. Oprócz tego jedno tłumaczenie można zapisać w pliku ''Karaoke tłumaczenie.txt''. Oba warianty można stosować jednocześnie jak i zamiennie albo całkowicie z nich zrezygnować.'
           ''
           ''
           ''
@@ -1283,11 +1328,13 @@ object Karaoke_Form: TKaraoke_Form
           ''
           'Parametry napisów należy zdefiniować w 4 pierwszych linijkach pliku (bez pierwszych pustych linii).'
           '  - Przesunięcie napisów należy zdefiniować w 3 linijce pliku, wartość jest w milisekundach; mogą być też wartości ujemne (przesunięcie napisów=300|-1000).'
-          '  - Rodzaj ukrywania napisów napisów należy zdefiniować w 4 linijce pliku (ukrywanie napisów=dół|góra|brak).'
+          '  - Rodzaj ukrywania napisów należy zdefiniować w 4 linijce pliku (ukrywanie napisów=dół|góra|brak).'
           '    Jeżeli nie zdefiniowano, domyślnie ustawi na ukrywanie górne.'
-          '    Wartość ''brak'' nie zmieni ustawienie (pozostawi wcześniejsze ustawienie).'
+          '    Wartość ''brak'' nie zmieni ustawienia (pozostawi wcześniejsze ustawienie).'
           ''
           'Jeżeli nie zdefiniowano parametrów napisów zaleca się zostawić pierwszą linijkę pustą (dla niektórych kodowań, np. UTF-8, błędnie dekoduje pierwszą linijkę).'
+          ''
+          'Parametrów napisów nie wyświetla w zakładce test (jeżeli wyświetla to znaczy, że nie zinterpretował parametrów prawidłowo i są traktowane jako tekst piosenki).'
           ''
           'Przykładowa struktura plików z napisami:'
           'I:'
@@ -1330,6 +1377,143 @@ object Karaoke_Form: TKaraoke_Form
           ''
           'Uwagi:'
           'Dla plików mp3 o próbkowaniu powyżej 128 kb/s po skoku czasowym może pokazywać nieprawidłowy bieżący czas utworu i tym samym stracić synchronizację napisów.'
+          ''
+          ''
+          ''
+          ''
+          '---'
+          ''
+          ''
+          ''
+          ''
+          'English'
+          ''
+          ''
+          'Use it at your own risk. Without warranty of any kind. If you do not agree, do not use it at all.'
+          ''
+          'The program was created using components of the VideoLAN project (http://www.videolan.org).'
+          'For the program to work, you must install ''VLC media player'' available at: http://www.videolan.org/'
+          ''
+          'The project used PasLibVlc (https://prog.olsztyn.pl/paslibvlc/).'
+          ''
+          ''
+          ''
+          ''
+          'Help:'
+          ''
+          ''
+          'Keyboard shortcuts:'
+          ''
+          'Volume:'
+          '  Louder [Up arrow, + (numeric keyboard)]'
+          '  Quieter [Down arrow, - (numeric keyboard)]'
+          '  Mute [W]'
+          '  LMB (on the screen) hold and move up and down'
+          ''
+          'Playback:'
+          '  Open file [P]'
+          '  Resume / Pause [Spacebar]'
+          '  Stop [S]'
+          '  Load subtitles [N]'
+          ''
+          '  Jump backwards [Left arrow, 10x : Ctrl + Left arrow, 0.1x : Shift + Left arrow]'
+          '  Jump forward [Right arrow, 10x : Ctrl + Right arrow, 0.1x : Shift + Right arrow]'
+          '  Jump 1 frame forward [>]'
+          '  LMB (on the screen) hold and move left and right'
+          ''
+          'Files:'
+          '  Media file (select file) [Ctrl + O]'
+          '  Subtitle file (select file) [Ctrl + N]'
+          '  Erase subtitles [X]'
+          ''
+          'Visibility:'
+          '  Hide button panel [U]'
+          '  Options [O]'
+          '  Full screen [F, Ctrl + Enter]'
+          '  Normal screen [Esc, F, Ctrl + Enter, Shift + Enter, Ctrl + U]  '
+          '  Maximize the window [Enter, Ctrl + U]'
+          '  Minimize the window [, (numeric keyboard)]'
+          '  Song line spacing [7 (numeric keyboard) - increase, 1 (numeric keyboard) - reduce]'
+          '  Visibility of the singing lines [L]'
+          '  Visibility of the upper singing line [1]'
+          '  Visibility of the center singing line [2]'
+          '  Visibility of the lower singing line [3]'
+          '  Refresh the view [R]'
+          ''
+          'Subtitles:'
+          '  Position of the singing area in percent [Page Up - increase, Page Down - lower]'
+          '  The size of the singing line [8 (numeric keyboard) - increase, 2 (numeric keyboard) - reduce]'
+          '  Subtitle font size [Home - increase size, End - decrease size]'
+          '  Clock frequency [Ctrl + + - increase, Ctrl + - - reduce, Ctrl + Backspace - default]'
+          '  Subtitle offset [[ - delay 100 ms, ] - speed up 100 ms, Ctrl + [ - delay 500 ms, Ctrl + ] - speed up 500 ms, '' - reset]'
+          '  Jump by the number of seconds [9 (numeric keyboard) - increase, 3 (numeric keyboard) - reduce]'
+          '  Test - information about the parameters of the subtitles [T]'
+          ''
+          ''
+          ''
+          ''
+          'About translations:'
+          ''
+          'Translation files can be placed in the ''Translations'' directory. In addition, one translation can be saved in the ''Karaoke tłumaczenie.txt'' file. Both variants can be used simultaneously, interchangeably or completely omitted.'
+          ''
+          ''
+          ''
+          ''
+          'About subtitles:'
+          ''
+          'Default accepted extensions of (text) files with subtitles: esama_karaoke, srt, txt.'
+          ''
+          'The subtitle parameters should be defined in the first 4 lines of the file (without the first blank lines).'
+          '  - The subtitle offset should be defined in the 3rd line of the file, the value is in milliseconds; there can also be negative values [subtitle offset](przesunięcie napisów=300|-1000).'
+          '  - The subtitle hiding type should be defined in the 4th line of the file [subtitle hiding=down|up|none](ukrywanie napisów=dół|góra|brak).'
+          '    If not defined, it will default to top hiding.'
+          '    The value [none] ''brak'' will not change the setting (it will leave the previous setting).'
+          ''
+          'If no subtitle parameters are defined, it is recommended to leave the first line blank (for some encodings, such as UTF-8, it incorrectly decodes the first line).'
+          ''
+          'Subtitle parameters do not display in the test tab (if it displays it means that it has not interpreted the parameters correctly and they are treated as a song text).'
+          ''
+          'Example of subtitle file structure:'
+          'I:'
+          ''
+          '0'
+          '00:00:02,000 --> 00:00:12,000'
+          'Words of the song 1'
+          ''
+          '0'
+          '00:00:15,500 --> 00:00:27,000'
+          'Words of the song 2'
+          'Words of the song 3'
+          ''
+          '0'
+          '00:00:30,200 --> 00:00:42,123'
+          'Words of the song 4'
+          ''
+          'Words of the song 5'
+          'II (with the specified offset of all subtitles and the indicated type of subtitle hiding):'
+          '0'
+          '00:00:00,001 --> 00:00:00,002'
+          'przesunięcie napisów=300'
+          'ukrywanie napisów=góra'
+          ''
+          '0'
+          '00:00:02,000 --> 00:00:12,000'
+          'Words of the song 1'
+          ''
+          '0'
+          '00:00:15,500 --> 00:00:27,000'
+          'Words of the song 2'
+          'Words of the song 3'
+          ''
+          '0'
+          '00:00:30,200 --> 00:00:42,123'
+          'Words of the song 4'
+          ''
+          'Words of the song 5'
+          ''
+          ''
+          'Comments:'
+          'For mp3 files with a sampling rate above 128 kbps, after a time jump it may show the incorrect current track time and thus lose subtitle synchronization.'
         )
         ReadOnly = True
         ScrollBars = ssAutoBoth
@@ -1339,7 +1523,7 @@ object Karaoke_Form: TKaraoke_Form
     end
     object Test_TabSheet: TTabSheet
       Caption = 'Test'
-      ClientHeight = 227
+      ClientHeight = 237
       ClientWidth = 242
       object Test_Panel: TPanel
         Left = 0
@@ -1397,9 +1581,9 @@ object Karaoke_Form: TKaraoke_Form
           TabOrder = 2
         end
       end
-      object Memo1: TMemo
+      object Test_Memo: TMemo
         Left = 0
-        Height = 142
+        Height = 152
         Top = 85
         Width = 242
         Align = alClient
@@ -1421,8 +1605,8 @@ object Karaoke_Form: TKaraoke_Form
     end
   end
   object Opcje_Splitter: TSplitter
-    Left = 378
-    Height = 255
+    Left = 494
+    Height = 265
     Top = 125
     Width = 6
     Align = alRight
@@ -1458,7 +1642,7 @@ object Karaoke_Form: TKaraoke_Form
     TabOrder = 4
     Visible = False
   end
-  object Linia_Spiewu_Dol_StaticText: TStaticText
+  object Linia_Spiewu__Dol_StaticText: TStaticText
     Left = 115
     Height = 3
     Top = 370
@@ -1469,7 +1653,7 @@ object Karaoke_Form: TKaraoke_Form
     TabOrder = 5
     Transparent = False
   end
-  object Linia_Spiewu_Gora_StaticText: TStaticText
+  object Linia_Spiewu__Gora_StaticText: TStaticText
     Left = 115
     Height = 3
     Top = 331
@@ -1480,7 +1664,7 @@ object Karaoke_Form: TKaraoke_Form
     TabOrder = 6
     Transparent = False
   end
-  object Linia_Spiewu_Srodek_StaticText: TStaticText
+  object Linia_Spiewu__Srodek_StaticText: TStaticText
     Left = 115
     Height = 3
     Top = 351
@@ -1522,8 +1706,8 @@ object Karaoke_Form: TKaraoke_Form
   object Czas_Dol_ProgressBar: TProgressBar
     Left = 0
     Height = 10
-    Top = 380
-    Width = 634
+    Top = 390
+    Width = 750
     Align = alBottom
     OnMouseDown = Czas_ProgressBarMouseDown
     OnMouseMove = Czas_ProgressBarMouseMove

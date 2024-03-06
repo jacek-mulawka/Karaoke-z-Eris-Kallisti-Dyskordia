@@ -12,10 +12,12 @@ j.mulawka@interia.pl
 https://github.com/jacek-mulawka
 
 
-Program jest darmowy, udostêpniony w postaci takiej jakiej jest wraz ze wszystkimi b³êdami. U¿ytkownik zyskuje dostêp do programu, u¿ywa programu na w³asne ryzyko i ponosi wy³¹czn¹ odpowiedzialnoœæ za wszelkie szkody (w³asne i niew³asne) materialne i niematerialne oraz utratê danych w zwi¹zku z u¿ywaniem programu.
+Program jest darmowy, udostÄ™pniony w postaci takiej jakiej jest wraz ze wszystkimi bÅ‚Ä™dami. UÅ¼ytkownik zyskuje dostÄ™p do programu, uÅ¼ywa programu na wÅ‚asne ryzyko i ponosi wyÅ‚Ä…cznÄ… odpowiedzialnoÅ›Ä‡ za wszelkie szkody (wÅ‚asne i niewÅ‚asne) materialne i niematerialne oraz utratÄ™ danych w zwiÄ…zku z uÅ¼ywaniem programu.
 
-Program zosta³ stworzony z u¿yciem komponentów projektu VideoLAN (http://www.videolan.org).
-Aby program móg³ dzia³aæ nale¿y zainstalowaæ 'VLC media player' dostêpny na stronie: http://www.videolan.org/
+Program zostaÅ‚ stworzony z uÅ¼yciem komponentÃ³w projektu VideoLAN (http://www.videolan.org).
+Aby program mÃ³gÅ‚ dziaÅ‚aÄ‡ naleÅ¼y zainstalowaÄ‡ 'VLC media player' dostÄ™pny na stronie: http://www.videolan.org/
+
+W projekcie wykorzystano PasLibVlc (https://prog.olsztyn.pl/paslibvlc/).
 
 
 
@@ -23,72 +25,78 @@ Aby program móg³ dzia³aæ nale¿y zainstalowaæ 'VLC media player' dostêpny na stro
 Pomoc:
 
 
-Skróty klawiszowe:
+SkrÃ³ty klawiszowe:
 
-G³oœnoœæ
-  G³oœniej [kursor góra, + (klawiatura numeryczna)].
-  Ciszej [kursor dó³, - (klawiatura numeryczna)].
-  Wycisz [W].
-  LPM (na ekranie) trzymaj i poruszaj góra dó³.
+GÅ‚oÅ›noÅ›Ä‡:
+  GÅ‚oÅ›niej [kursor gÃ³ra, + (klawiatura numeryczna)]
+  Ciszej [kursor dÃ³Å‚, - (klawiatura numeryczna)]
+  Wycisz [W]
+  LPM (na ekranie) trzymaj i poruszaj gÃ³ra dÃ³Å‚
 
 Odtwarzanie:
-  Otwórz plik, play [P].
-  Wznów / Pauza [Spacja].
-  Stop [S].
-  Wczytaj napisy [N].
+  OtwÃ³rz plik, play [P]
+  WznÃ³w / Pauza [Spacja]
+  Stop [S]
+  Wczytaj napisy [N]
 
-  Skocz do ty³u [kursor lewo, 10x : Ctrl + kursor lewo, 0.1x : Shift + kursor lewo]
-  Skocz do przodu [kursor prawo, 10x : Ctrl + kursor prawo, 0.1x : Shift + kursor prawo].
-  Skocz 1 klatkê do przodu [>].
-  LPM (na ekranie) trzymaj i poruszaj lewo prawo.
+  Skocz do tyÅ‚u [kursor lewo, 10x : Ctrl + kursor lewo, 0.1x : Shift + kursor lewo]
+  Skocz do przodu [kursor prawo, 10x : Ctrl + kursor prawo, 0.1x : Shift + kursor prawo]
+  Skocz 1 klatkÄ™ do przodu [>]
+  LPM (na ekranie) trzymaj i poruszaj lewo prawo
 
 Pliki:
-  Plik multimediów (wska¿ plik) [Ctrl + O].
-  Plik napisów (wska¿ plik) [Ctrl + N].
-  Wyczyœæ napisy [X].
+  Plik multimediÃ³w (wskaÅ¼ plik) [Ctrl + O]
+  Plik napisÃ³w (wskaÅ¼ plik) [Ctrl + N]
+  WyczyÅ›Ä‡ napisy [X]
 
-Widocznoœæ:
-  Ukryj panel przycisków [U].
-  Opcje [O].
-  Pe³ny ekran [Enter, Ctrl + U].
-  Normalny ekran [Esc, Ctrl + U].
-  Pe³ny ekran (tryb niestabilny) [F, Ctrl + Enter].
-  Normalny ekran (tryb niestabilny) [Shift + Enter, Ctrl + Enter].
-  Minimalizuj okno [, (numeryczna)].
-  Odstêp linii œpiewu [7 (numeryczna) - zmniejsz, 1 (numeryczna) - zwiêksz].
-  Widocznoœæ linii œpiewu [L].
-  Widocznoœæ linii œpiewu górnej [1].
-  Widocznoœæ linii œpiewu œrodkowej [2].
-  Widocznoœæ linii œpiewu dolnej [3].
-  Odœwie¿ widok [R].
+WidocznoÅ›Ä‡:
+  Ukryj panel przyciskÃ³w [U]
+  Opcje [O]
+  PeÅ‚ny ekran [F, Ctrl + Enter]
+  Normalny ekran [Esc, F, Ctrl + Enter, Shift + Enter, Ctrl + U]
+  Maksymalizuj okno [Enter, Ctrl + U]
+  Minimalizuj okno [, (numeryczna)]
+  OdstÄ™p linii Å›piewu [7 (numeryczna) - zwiÄ™ksz, 1 (numeryczna) - zmniejsz]
+  WidocznoÅ›Ä‡ linii Å›piewu [L]
+  WidocznoÅ›Ä‡ linii Å›piewu gÃ³rnej [1]
+  WidocznoÅ›Ä‡ linii Å›piewu Å›rodkowej [2]
+  WidocznoÅ›Ä‡ linii Å›piewu dolnej [3]
+  OdÅ›wieÅ¼ widok [R]
 
 Napisy:
-  Pozycja obszaru œpiewu [Page Up - podwy¿sz, Page Down - obni¿].
-  Wielkoœæ linii œpiewu [8 (numeryczna) - zwiêksz, 2 (numeryczna) - zmniejsz].
-  Rozmiar czcionki napisów [Home - zwiêksz rozmiar, End - zmniejsz rozmiar].
-  Czêstotliwoœæ zegara [Ctrl + + - zwiêksz, Ctrl + - - zmniejsz, Ctrl + Backspace - domyœlna].
-  Przesuniêcie napisów [100 ms : [ - opóŸnij, ] - przyœpiesz, 500 ms : Ctrl + [ - opóŸnij, Ctrl + ] - przyœpiesz, ' - wyzeruj].
-  Skok o iloœæ sekund [9 (numeryczna) - zwiêksz, 3 (numeryczna) - zmniejsz].
-  Test - informacja o parametrach napisu [T].
+  Pozycja obszaru Å›piewu [Page Up - podwyÅ¼sz, Page Down - obniÅ¼]
+  WielkoÅ›Ä‡ linii Å›piewu [8 (numeryczna) - zwiÄ™ksz, 2 (numeryczna) - zmniejsz]
+  Rozmiar czcionki napisÃ³w [Home - zwiÄ™ksz rozmiar, End - zmniejsz rozmiar]
+  CzÄ™stotliwoÅ›Ä‡ zegara [Ctrl + + - zwiÄ™ksz, Ctrl + - - zmniejsz, Ctrl + Backspace - domyÅ›lna]
+  PrzesuniÄ™cie napisÃ³w [[ - opÃ³Åºnij 100 ms, ] - przyÅ›piesz 100 ms, Ctrl + [ - opÃ³Åºnij 500 ms, Ctrl + ] - przyÅ›piesz 500 ms, ' - wyzeruj]
+  Skok o iloÅ›Ä‡ sekund [9 (numeryczna) - zwiÄ™ksz, 3 (numeryczna) - zmniejsz]
+  Test - informacja o parametrach napisu [T]
+
+
+
+
+O tÅ‚umaczeniach:
+
+Pliki z tÅ‚umaczeniami moÅ¼na umieszczaÄ‡ w katalogu 'TÅ‚umaczenia'. OprÃ³cz tego jedno tÅ‚umaczenie moÅ¼na zapisaÄ‡ w pliku 'Karaoke tÅ‚umaczenie.txt'. Oba warianty moÅ¼na stosowaÄ‡ jednoczeÅ›nie jak i zamiennie albo caÅ‚kowicie z nich zrezygnowaÄ‡.
 
 
 
 
 O napisach:
 
-Domyœlnie akceptowane rozszerzenia plików (tekstowych) z napisami: esama_karaoke, srt, txt.
+DomyÅ›lnie akceptowane rozszerzenia plikÃ³w (tekstowych) z napisami: esama_karaoke, srt, txt.
 
-Parametry napisów nale¿y zdefiniowaæ w 4 pierwszych linijkach pliku (bez pierwszych pustych linii).
-  - Przesuniêcie napisów nale¿y zdefiniowaæ w 3 linijce pliku, wartoœæ jest w milisekundach; mog¹ byæ te¿ wartoœci ujemne (przesuniêcie napisów=300|-1000).
-  - Rodzaj ukrywania napisów napisów nale¿y zdefiniowaæ w 4 linijce pliku (ukrywanie napisów=dó³|góra|brak).
-    Je¿eli nie zdefiniowano, domyœlnie ustawi na ukrywanie górne.
-    Wartoœæ 'brak' nie zmieni ustawienie (pozostawi wczeœniejsze ustawienie).
+Parametry napisÃ³w naleÅ¼y zdefiniowaÄ‡ w 4 pierwszych linijkach pliku (bez pierwszych pustych linii).
+  - PrzesuniÄ™cie napisÃ³w naleÅ¼y zdefiniowaÄ‡ w 3 linijce pliku, wartoÅ›Ä‡ jest w milisekundach; mogÄ… byÄ‡ teÅ¼ wartoÅ›ci ujemne (przesuniÄ™cie napisÃ³w=300|-1000).
+  - Rodzaj ukrywania napisÃ³w naleÅ¼y zdefiniowaÄ‡ w 4 linijce pliku (ukrywanie napisÃ³w=dÃ³Å‚|gÃ³ra|brak).
+    JeÅ¼eli nie zdefiniowano, domyÅ›lnie ustawi na ukrywanie gÃ³rne.
+    WartoÅ›Ä‡ 'brak' nie zmieni ustawienia (pozostawi wczeÅ›niejsze ustawienie).
 
-Je¿eli nie zdefiniowano parametrów napisów zaleca siê zostawiæ pierwsz¹ linijkê pust¹ (dla niektórych kodowañ, np. UTF-8, b³êdnie dekoduje pierwsz¹ linijkê).
+JeÅ¼eli nie zdefiniowano parametrÃ³w napisÃ³w zaleca siÄ™ zostawiÄ‡ pierwszÄ… linijkÄ™ pustÄ… (dla niektÃ³rych kodowaÅ„, np. UTF-8, bÅ‚Ä™dnie dekoduje pierwszÄ… linijkÄ™).
 
-Parametrów napisów nie wyœwietla w zak³adce test (je¿eli wyœwietla to znaczy, ¿e nie zinterpretowa³ parametrów prawid³owo i s¹ traktowane jako tekst piosenki).
+ParametrÃ³w napisÃ³w nie wyÅ›wietla w zakÅ‚adce test (jeÅ¼eli wyÅ›wietla to znaczy, Å¼e nie zinterpretowaÅ‚ parametrÃ³w prawidÅ‚owo i sÄ… traktowane jako tekst piosenki).
 
-Przyk³adowa struktura plików z napisami:
+PrzykÅ‚adowa struktura plikÃ³w z napisami:
 I:
 
 0
@@ -105,11 +113,11 @@ Tekst piosenki 3
 Tekst piosenki 4
 
 Tekst piosenki 5
-II (z zadanym przesuniêciem wszystkich napisów i wskazanym rodzajem ukrywania napisów):
+II (z zadanym przesuniÄ™ciem wszystkich napisÃ³w i wskazanym rodzajem ukrywania napisÃ³w):
 0
 00:00:00,001 --> 00:00:00,002
-przesuniêcie napisów=300
-ukrywanie napisów=góra
+przesuniÄ™cie napisÃ³w=300
+ukrywanie napisÃ³w=gÃ³ra
 
 0
 00:00:02,000 --> 00:00:12,000
@@ -128,4 +136,141 @@ Tekst piosenki 5
 
 
 Uwagi:
-Dla plików mp3 o próbkowaniu powy¿ej 128 kb/s po skoku czasowym mo¿e pokazywaæ nieprawid³owy bie¿¹cy czas utworu i tym samym straciæ synchronizacjê napisów.
+Dla plikÃ³w mp3 o prÃ³bkowaniu powyÅ¼ej 128 kb/s po skoku czasowym moÅ¼e pokazywaÄ‡ nieprawidÅ‚owy bieÅ¼Ä…cy czas utworu i tym samym straciÄ‡ synchronizacjÄ™ napisÃ³w.
+
+
+
+
+---
+
+
+
+
+English
+
+
+Use it at your own risk. Without warranty of any kind. If you do not agree, do not use it at all.
+
+The program was created using components of the VideoLAN project (http://www.videolan.org).
+For the program to work, you must install 'VLC media player' available at: http://www.videolan.org/
+
+The project used PasLibVlc (https://prog.olsztyn.pl/paslibvlc/).
+
+
+
+
+Help:
+
+
+Keyboard shortcuts:
+
+Volume:
+  Louder [Up arrow, + (numeric keyboard)]
+  Quieter [Down arrow, - (numeric keyboard)]
+  Mute [W]
+  LMB (on the screen) hold and move up and down
+
+Playback:
+  Open file [P]
+  Resume / Pause [Spacebar]
+  Stop [S]
+  Load subtitles [N]
+
+  Jump backwards [Left arrow, 10x : Ctrl + Left arrow, 0.1x : Shift + Left arrow]
+  Jump forward [Right arrow, 10x : Ctrl + Right arrow, 0.1x : Shift + Right arrow]
+  Jump 1 frame forward [>]
+  LMB (on the screen) hold and move left and right
+
+Files:
+  Media file (select file) [Ctrl + O]
+  Subtitle file (select file) [Ctrl + N]
+  Erase subtitles [X]
+
+Visibility:
+  Hide button panel [U]
+  Options [O]
+  Full screen [F, Ctrl + Enter]
+  Normal screen [Esc, F, Ctrl + Enter, Shift + Enter, Ctrl + U]  
+  Maximize the window [Enter, Ctrl + U]
+  Minimize the window [, (numeric keyboard)]
+  Song line spacing [7 (numeric keyboard) - increase, 1 (numeric keyboard) - reduce]
+  Visibility of the singing lines [L]
+  Visibility of the upper singing line [1]
+  Visibility of the center singing line [2]
+  Visibility of the lower singing line [3]
+  Refresh the view [R]
+
+Subtitles:
+  Position of the singing area in percent [Page Up - increase, Page Down - lower]
+  The size of the singing line [8 (numeric keyboard) - increase, 2 (numeric keyboard) - reduce]
+  Subtitle font size [Home - increase size, End - decrease size]
+  Clock frequency [Ctrl + + - increase, Ctrl + - - reduce, Ctrl + Backspace - default]
+  Subtitle offset [[ - delay 100 ms, ] - speed up 100 ms, Ctrl + [ - delay 500 ms, Ctrl + ] - speed up 500 ms, ' - reset]
+  Jump by the number of seconds [9 (numeric keyboard) - increase, 3 (numeric keyboard) - reduce]
+  Test - information about the parameters of the subtitles [T]
+
+
+
+
+About translations:
+
+Translation files can be placed in the 'Translations' directory. In addition, one translation can be saved in the 'Karaoke tÅ‚umaczenie.txt' file. Both variants can be used simultaneously, interchangeably or completely omitted.
+
+
+
+
+About subtitles:
+
+Default accepted extensions of (text) files with subtitles: esama_karaoke, srt, txt.
+
+The subtitle parameters should be defined in the first 4 lines of the file (without the first blank lines).
+  - The subtitle offset should be defined in the 3rd line of the file, the value is in milliseconds; there can also be negative values [subtitle offset](przesuniÄ™cie napisÃ³w=300|-1000).
+  - The subtitle hiding type should be defined in the 4th line of the file [subtitle hiding=down|up|none](ukrywanie napisÃ³w=dÃ³Å‚|gÃ³ra|brak).
+    If not defined, it will default to top hiding.
+    The value [none] 'brak' will not change the setting (it will leave the previous setting).
+
+If no subtitle parameters are defined, it is recommended to leave the first line blank (for some encodings, such as UTF-8, it incorrectly decodes the first line).
+
+Subtitle parameters do not display in the test tab (if it displays it means that it has not interpreted the parameters correctly and they are treated as a song text).
+
+Example of subtitle file structure:
+I:
+
+0
+00:00:02,000 --> 00:00:12,000
+Words of the song 1
+
+0
+00:00:15,500 --> 00:00:27,000
+Words of the song 2
+Words of the song 3
+
+0
+00:00:30,200 --> 00:00:42,123
+Words of the song 4
+
+Words of the song 5
+II (with the specified offset of all subtitles and the indicated type of subtitle hiding):
+0
+00:00:00,001 --> 00:00:00,002
+przesuniÄ™cie napisÃ³w=300
+ukrywanie napisÃ³w=gÃ³ra
+
+0
+00:00:02,000 --> 00:00:12,000
+Words of the song 1
+
+0
+00:00:15,500 --> 00:00:27,000
+Words of the song 2
+Words of the song 3
+
+0
+00:00:30,200 --> 00:00:42,123
+Words of the song 4
+
+Words of the song 5
+
+
+Comments:
+For mp3 files with a sampling rate above 128 kbps, after a time jump it may show the incorrect current track time and thus lose subtitle synchronization.
