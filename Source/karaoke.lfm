@@ -873,7 +873,7 @@ object Karaoke_Form: TKaraoke_Form
         Top = 0
         Width = 242
         Align = alTop
-        Caption = 'Karaoke z Eris Kallisti Dyskordia'#13#10'wersja: 2024.03.06.'#13#10#13#10'MIT License'#13#10#13#10'Copyright (c) 2017 Jacek Mulawka'
+        Caption = 'Karaoke z Eris Kallisti Dyskordia'#13#10'wersja: 2024.07.02.'#13#10#13#10'MIT License'#13#10#13#10'Copyright (c) 2017 Jacek Mulawka'
         ParentColor = False
         WordWrap = True
       end
@@ -1760,7 +1760,6 @@ object Karaoke_Form: TKaraoke_Form
   end
   object Systemowy_Timer: TTimer
     Enabled = False
-    Interval = 3000
     OnTimer = Systemowy_TimerTimer
     Left = 334
     Top = 330

@@ -1,5 +1,5 @@
 Karaoke z Eris Kallisti Dyskordia
-wersja 2024.03.06.
+wersja 2024.07.02.
 
 MIT License
 

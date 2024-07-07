@@ -271,6 +271,7 @@ type
     mysz__przycisk_nacisniety__y__start_g,
     okno__gora,
     okno__lewo,
+    okno__przenies__na_wierzch__licznik_g,
     okno__szerokosc,
     okno__wysokosc
       : integer;
@@ -303,6 +304,7 @@ type
     procedure Napisy__Przelicz();
     procedure Napisy__Wczytaj( const adres_pliku_f : string );
     procedure Napisy__Zwolnij();
+    procedure Okno__Przenies__Na_Wierzch();
     procedure Plik__Do_Uruchomienia__Dopisz();
     function Plik__Multimedialny_Pasujacy_Do_Napisow__Otworz( const adres_pliku_f : string ) : boolean;
     procedure Plik__Otworz( const adres_pliku_f : string );
@@ -326,7 +328,8 @@ type
 const
   glosnosc__poziom__minimalny_c : integer = 1;
   glosnosc__poziom__maksymalny_c : integer = 200;
-  plik_ini_nazwa_c : string = 'Karaoke.ini';
+  plik__ini_nazwa_c : string = 'Karaoke.ini';
+  plik__skojarzenie_nazwa_c : string = 'Karaoke_plik';
   pomoc_o_programie__plik__nazwa_c : string = 'Karaoke - pomoc, o programie.txt';
   tlumaczenia__jeden_plik__plik__nazwa_c : string = 'Karaoke tłumaczenie.txt';
   tlumaczenia__katalog__nazwa_c : string = 'Tłumaczenia';
@@ -1453,6 +1456,24 @@ begin
 
 end;//---//Funkcja Napisy__Zwolnij().
 
+//Funkcja Okno__Przenies__Na_Wierzch().
+procedure TKaraoke_Form.Okno__Przenies__Na_Wierzch();
+begin
+
+  if okno__przenies__na_wierzch__licznik_g <= 0 then
+    Exit;
+
+
+  Self.BringToFront();
+
+  //Self.FormStyle := fsStayOnTop; // Sprawia, że znika obraz.
+  //Self.FormStyle := fsNormal;
+
+
+  dec( okno__przenies__na_wierzch__licznik_g );
+
+end;//---//Funkcja Okno__Przenies__Na_Wierzch().
+
 //Funkcja Plik__Do_Uruchomienia__Dopisz().
 procedure TKaraoke_Form.Plik__Do_Uruchomienia__Dopisz();
 var
@@ -1487,7 +1508,7 @@ begin
     Exit;
 
   i := 0;
-  zts := ExtractFilePath( Application.ExeName ) + 'Karaoke_plik';
+  zts := ExtractFilePath( Application.ExeName ) + plik__skojarzenie_nazwa_c;
 
   while i <= 5 do
     begin
@@ -1618,7 +1639,7 @@ begin
     and ( Glosnosc_ProgressBar.Position <= glosnosc__poziom__maksymalny_c ) then
     PasLibVlcPlayer1.SetAudioVolume( Glosnosc_ProgressBar.Position ); // Jeżeli nie jest wczytany plik to nic się nie zmieni.
 
-  Karaoke_Form.BringToFront();
+  //Karaoke_Form.BringToFront();
 
 
   Screen.Cursor := crDefault;
@@ -2660,6 +2681,7 @@ begin
   kursor_ruch_data_czas := Now();
   milisekundy_filmu := 0;
   needStop := true;
+  okno__przenies__na_wierzch__licznik_g := 0;
   tlumaczenie__jeden_plik__wybrane_g := false;
   zamykanie := false;
   zegar_systemowy_stop := Now();
@@ -2670,6 +2692,7 @@ begin
   PasLibVlcPlayer1.Align := alClient;
   Zaslona_Panel.Align := alClient;
 
+  Self.Position := poDesigned;
 
   try
     if Opcje_ScrollBox.HorzScrollBar.Visible then // Jakiś problem gdy opcje są ukryte.
@@ -2968,8 +2991,10 @@ end;//---//Timer1Timer().
 //Systemowy_TimerTimer().
 procedure TKaraoke_Form.Systemowy_TimerTimer( Sender: TObject );
 var
-  search_rec : TSearchRec;
+  ztb : boolean;
+
   zts : string;
+
   tekst_l : TStringList;
 begin
 
@@ -2986,18 +3011,16 @@ begin
   Systemowy_Timer.Enabled := false;
   zegar_systemowy_stop := Now();
 
+
   if Jedno_Uruchomienie_Programu_CheckBox.Checked then
     begin
 
-      zts := ExtractFilePath( Application.ExeName ) + 'Karaoke_plik';
+      zts := ExtractFilePath( Application.ExeName ) + plik__skojarzenie_nazwa_c;
 
-      if FindFirst( zts, faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
+      if FileExistsUTF8( zts ) then // Sprawdza czy istnieje plik.
         begin
 
           // Istnieje.
-
-          SysUtils.FindClose( search_rec ); // SysUtils. // Zmiana w lazarusie 2.0 z FindCloseUTF8().
-
 
           tekst_l := TStringList.Create();
 
@@ -3023,22 +3046,36 @@ begin
 
           tekst_l.Free();
 
-          DeleteFile(   PChar(  ExtractFilePath( Application.ExeName ) + 'Karaoke_plik'  )   );
+          DeleteFile(   PChar(  ExtractFilePath( Application.ExeName ) + plik__skojarzenie_nazwa_c  )   );
 
-          Plik__Multimedialny_Pasujacy_Do_Napisow__Otworz( zts );
+          ztb := Plik__Multimedialny_Pasujacy_Do_Napisow__Otworz( zts );
 
-          Karaoke_Form.BringToFront();
 
-          Karaoke_Form.FormStyle := fsStayOnTop;
-          Karaoke_Form.FormStyle := fsNormal;
+          //Okno__Przenies__Na_Wierzch(); // Próbuje przesunąć okno na wierzch.
+
+          // Jeżeli otwiera kolejny plik wideo poprzez skojarzenie programu exe z rozszerzeniem pliku to słychać dźwięk ale nie widać obrazu.
+          // Najprawdopodobniej jest to spowodowane próbą przesunięcia okna na wierzch.
+          // Więc albo okno jest na wierzchu ale nie widać obrazu albo widać obraz ale trzeba ręcznie przejść do okna odtwarzacza.
+          if ztb then
+            begin
+
+              Plik__Otworz( Muzyka_EditButton.Text );
+
+              okno__przenies__na_wierzch__licznik_g := 3;
+
+            end;
 
         end;
-      //---//if FindFirst( sciezka_do_pliku, faAnyFile, search_rec ) = 0 then // Sprawdza czy istnieje plik.
+      //---//if FileExistsUTF8( zts ) then
 
     end;
   //---//if Jedno_Uruchomienie_Programu_CheckBox.Checked then
 
   Systemowy_Timer.Enabled := true;
+
+
+  if okno__przenies__na_wierzch__licznik_g > 0 then
+    Okno__Przenies__Na_Wierzch();
 
 end;//---//Systemowy_TimerTimer().
 
@@ -3468,39 +3505,39 @@ begin
     goto normalny_ekran_l;
 
 
-  if Karaoke_Form.BorderStyle <> bsNone then
+  if Self.BorderStyle <> bsNone then
     begin
 
-      okno__gora := Karaoke_Form.Top;
-      okno__lewo := Karaoke_Form.Left;
-      okno__wysokosc := Karaoke_Form.Height;
-      okno__szerokosc := Karaoke_Form.Width;
+      okno__gora := Self.Top;
+      okno__lewo := Self.Left;
+      okno__wysokosc := Self.Height;
+      okno__szerokosc := Self.Width;
 
-      Karaoke_Form.WindowState := wsMaximized;
-      Karaoke_Form.BorderStyle := bsNone;
+      Self.WindowState := wsMaximized;
+      Self.BorderStyle := bsNone;
       Przyciski_Panel.Visible := false;
 
       Informacja_Tekst_Wyswietl( tlumaczenie_komunikaty_r.pelny_ekran, null );
 
     end
-  else//if Karaoke_Form.BorderStyle <> bsNone then
+  else//if Self.BorderStyle <> bsNone then
     begin
 
       normalny_ekran_l:
 
       Przyciski_Panel.Visible := true;
-      Karaoke_Form.WindowState := wsNormal;
-      Karaoke_Form.BorderStyle := bsSizeable;
+      Self.WindowState := wsNormal;
+      Self.BorderStyle := bsSizeable;
 
-      Karaoke_Form.Top := okno__gora;
-      Karaoke_Form.Left := okno__lewo;
-      Karaoke_Form.Height := okno__wysokosc;
-      Karaoke_Form.Width := okno__szerokosc;
+      Self.Top := okno__gora;
+      Self.Left := okno__lewo;
+      Self.Height := okno__wysokosc;
+      Self.Width := okno__szerokosc;
 
       Informacja_Tekst_Wyswietl( tlumaczenie_komunikaty_r.normalny_ekran, null );
 
     end;
-  //---//if Karaoke_Form.BorderStyle <> bsNone then
+  //---//if Self.BorderStyle <> bsNone then
 
 
   zts := AnsiLowerCase(  ExtractFileExt( Muzyka_EditButton.Text )  );
@@ -3805,7 +3842,7 @@ var
   tekst_l : TStringList;
 begin
 
-  zts := ExtractFilePath( Application.ExeName ) + plik_ini_nazwa_c ;
+  zts := ExtractFilePath( Application.ExeName ) + plik__ini_nazwa_c ;
 
 
   if not FileExists( zts ) then
@@ -4126,7 +4163,7 @@ var
   tekst_l : TStringList;
 begin
 
-  plik_ini := IniFiles.TIniFile.Create(  ExtractFilePath( Application.ExeName ) + plik_ini_nazwa_c  ); // Application potrzebuje w uses Forms.
+  plik_ini := IniFiles.TIniFile.Create(  ExtractFilePath( Application.ExeName ) + plik__ini_nazwa_c  ); // Application potrzebuje w uses Forms.
 
 
   Plik_ini.WriteBool( 'Opcje', 'Dolny_Pasek_Postepu__Ukrywaj', Dolny_Pasek_Postepu__Ukrywaj_CheckBox.Checked );
@@ -4584,28 +4621,39 @@ begin
       else//if mysz__przycisk_nacisniety_g then
         begin
 
-          //Pelny_Ekran_ButtonClick( nil ) //???
-
-          if Karaoke_Form.BorderStyle <> bsSizeable then
-            Karaoke_Form.BorderStyle := bsSizeable;
-
-          if Karaoke_Form.WindowState <> wsNormal then
+          if Self.BorderStyle = bsNone then
             begin
 
-              Przyciski_Panel.Visible := true;
-              Karaoke_Form.WindowState := wsNormal;
+              // Wyłącza pełny ekran.
 
-              Karaoke_Form.Top := okno__gora;
-              Karaoke_Form.Left := okno__lewo;
-              Karaoke_Form.Height := okno__wysokosc;
-              Karaoke_Form.Width := okno__szerokosc;
+              Pelny_Ekran_ButtonClick( nil );
 
-              Zaslona_Przerysuj();
+            end
+          else//if Self.BorderStyle = bsNone then
+            begin
 
-              Informacja_Tekst_Wyswietl( tlumaczenie_komunikaty_r.normalny_ekran, null );
+              if Karaoke_Form.BorderStyle <> bsSizeable then
+                Karaoke_Form.BorderStyle := bsSizeable;
 
-            end;
-          //---//if Karaoke_Form.WindowState <> wsNormal then
+              if Karaoke_Form.WindowState <> wsNormal then
+                begin
+
+                  Przyciski_Panel.Visible := true;
+                  Karaoke_Form.WindowState := wsNormal;
+
+                  Karaoke_Form.Top := okno__gora;
+                  Karaoke_Form.Left := okno__lewo;
+                  Karaoke_Form.Height := okno__wysokosc;
+                  Karaoke_Form.Width := okno__szerokosc;
+
+                  Zaslona_Przerysuj();
+
+                  Informacja_Tekst_Wyswietl( tlumaczenie_komunikaty_r.normalny_ekran, null );
+
+                end;
+              //---//if Karaoke_Form.WindowState <> wsNormal then
+
+            end;//---//if Self.BorderStyle = bsNone then
 
         end;
       //---//if mysz__przycisk_nacisniety_g then

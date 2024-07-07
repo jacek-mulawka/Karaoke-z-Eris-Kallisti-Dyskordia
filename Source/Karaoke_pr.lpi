@@ -20,7 +20,7 @@
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
       <Language Value="0415"/>
-      <StringTable Comments="j.mulawka@interia.pl https://github.com/jacek-mulawka" CompanyName="Jacek Mulawka" FileDescription="Odtwarzacz multimedialny oparty na &apos;VideoLAN (www.videolan.org)&apos; wyświetlający napisy do karaoke w formie przesuwającego się tekstu. MIT License." LegalCopyright="Copyright (c) 2017 Jacek Mulawka" OriginalFilename="Karaoke z Eris Kallisti Dyskordia" ProductName="Karaoke z Eris Kallisti Dyskordia" ProductVersion="2024.03.06"/>
+      <StringTable Comments="j.mulawka@interia.pl https://github.com/jacek-mulawka" CompanyName="Jacek Mulawka" FileDescription="Odtwarzacz multimedialny oparty na &apos;VideoLAN (www.videolan.org)&apos; wyświetlający napisy do karaoke w formie przesuwającego się tekstu. MIT License." LegalCopyright="Copyright (c) 2017 Jacek Mulawka" OriginalFilename="Karaoke z Eris Kallisti Dyskordia" ProductName="Karaoke z Eris Kallisti Dyskordia" ProductVersion="2024.07.02"/>
     </VersionInfo>
     <BuildModes Count="2">
       <Item1 Name="Default" Default="True"/>
